@@ -25,7 +25,7 @@ def read_file(file1:str=None, file2:str=None, output_text:str=None):
         file2_name = os.path.basename(file2)
         print(f'The shape of the {file1_name} file is {file_1_data.shape}')
         print(f'The shape of the {file2_name} file is {file_2_data.shape}')
-na
+
         # convert data from 3D  to 2D to use MSE metric
         file1_2D = np.reshape(file_1_data, (file_1_data.shape[0], -1))
         file2_2D = np.reshape(file_2_data, (file_2_data.shape[0], -1))
