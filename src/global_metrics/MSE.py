@@ -61,6 +61,9 @@ def calc_mse(file1:str ='', file2:str ='', output_text:str =''):
         mse = mean_squared_error(file1_2D, file2_2D)
         print(f"The Mean Squared Error between the {file1_name} and {file2_name} is:\n", mse)
 
+        read_file1.close()
+        read_file2.close()
+
         if output_text != '':
             with open(output_text, 'a') as output_file:
                 np.savetxt(output_file, [mse], fmt='%s', delimiter='', newline='')
