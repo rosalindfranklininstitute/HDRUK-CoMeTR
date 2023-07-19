@@ -44,7 +44,9 @@ def calc_mse(file1: str = '', file2: str = '', output_text: str = ''):
         file_2_data = read_file2['entry']['data']['data']
 
         # Ensure the arrays have the same shape
-        assert file_1_data.shape == file_2_data.shape
+
+        if file_1_data.shape != file_2_data.shape:
+            raise ValueError('Dimensions do not match')
 
         # display shape of the file data for both files
         file1_name = os.path.basename(file1)
@@ -65,8 +67,8 @@ def calc_mse(file1: str = '', file2: str = '', output_text: str = ''):
         read_file2.close()
 
         if output_text != '':
-            with open(output_text, 'a') as output_file:
-                np.savetxt(output_file, [mse], fmt='%s', delimiter='', newline='')
+            with open(output_text, 'w') as output_file:
+                np.savetxt(output_file, mse, fmt='%s', delimiter='', newline='')
 
         return mse
 
@@ -76,8 +78,8 @@ def calc_mse(file1: str = '', file2: str = '', output_text: str = ''):
     except OSError as e:
         print(f'Error reading file {str(e)}')
 
-    except Exception as e:
-        print(f'An error occurred: {str(e)}')
+    # except Exception as e:
+    #     print(f'An error occurred: {str(e)}')
 
 
 if __name__ == '__main__':
