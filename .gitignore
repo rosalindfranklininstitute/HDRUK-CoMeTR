@@ -1,0 +1,5 @@
+dist/
+build/
+cometr.egg-info/
+.pytest_cache
+.idea
