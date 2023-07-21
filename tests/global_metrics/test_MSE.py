@@ -2,7 +2,7 @@ import unittest
 import numpy as np
 
 # from cometr.global_metrics.MSE import calc_mse
-from src.global_metrics.MSE import MSE
+from cometr.global_metrics.MSE import MSE
 
 
 class MSETest(unittest.TestCase):
