@@ -39,6 +39,9 @@ class MSE:
         self.file1 = file1
         self.file2 = file2
         self.output_text = output_text
+        self.check_file_exists()
+        self.is_h5py_file()
+        self.verify_output_file()
 
     # check if the file exists
     def check_file_exists(self):
@@ -48,7 +51,10 @@ class MSE:
     # check if the file is a h5py file
     def is_h5py_file(self):
         if not h5py.is_hdf5(self.file1) or not h5py.is_hdf5(self.file2):
-            raise ValueError("One or both files are not in HDF5 format.")
+            raise TypeError("One or both files are not in HDF5 format.")
+
+        if self.file1[-3:] != '.h5' or self.file2[-3:] != '.h5':
+            raise NameError('The files do have .h5 extension')
 
     def verify_output_file(self):
         if not self.output_text.endswith('.txt'):
@@ -57,10 +63,6 @@ class MSE:
     # calculate the mean squared error
 
     def calc_mse(self):
-
-        self.check_file_exists()
-        self.is_h5py_file()
-        self.verify_output_file()
 
         read_file1 = h5py.File(self.file1, 'r')
         read_file2 = h5py.File(self.file2, 'r')

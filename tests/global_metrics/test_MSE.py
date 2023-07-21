@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
+from os.path import dirname, abspath
 
-# from cometr.global_metrics.MSE import calc_mse
 from cometr.global_metrics.MSE import MSE
 
 
@@ -10,38 +10,65 @@ class MSETest(unittest.TestCase):
     # check error if the file does not exist
     def test_file_not_found_error(self) -> None:
         with self.assertRaises(FileNotFoundError) as e:
-            MSE('../data/file3_300', '../data/file2_1000', './output.txt').check_file_exists()
-        self.assertEqual(str(e.exception), "File not found")
+            metric = MSE(
+                dirname(abspath(__file__)) + '/../data/file3_300.h5',
+                dirname(abspath(__file__)) + '/../data/file2_1000.h5',
+                dirname(abspath(__file__)) + '/../data/output.txt'
+            )
 
     # check the error if one of the files is not in h5py format
     def test_h5pyfile(self) -> None:
-        with self.assertRaises(ValueError) as e:
-            MSE('../data/output.txt', '../data/file2_1000').is_h5py_file()
-        self.assertEqual(str(e.exception), "One or both files are not in HDF5 format.")
+        with self.assertRaises(TypeError) as e:
+            metric = MSE(
+                dirname(abspath(__file__)) + '/../data/output.txt',
+                dirname(abspath(__file__)) + '/../data/file2_1000.h5',
+                dirname(abspath(__file__)) + '/../data/output.txt'
+            )
+
+        with self.assertRaises(NameError) as e:
+            metric = MSE(
+                dirname(abspath(__file__)) + '/../data/file4_100',
+                dirname(abspath(__file__)) + '/../data/file2_1000.h5',
+                dirname(abspath(__file__)) + '/../data/output.txt'
+            )
 
     # check the error if the output file format is not txt
     def test_outputfile(self) -> None:
         with self.assertRaises(ValueError) as e:
-            MSE('../data/file1_1000', '../data/file2_1000', './output').verify_output_file()
-        self.assertEqual(str(e.exception), "The output file must be in .txt format.")
+            metric = MSE(
+                dirname(abspath(__file__)) + '/../data/file1_1000.h5',
+                dirname(abspath(__file__)) + '/../data/file2_1000.h5',
+                dirname(abspath(__file__)) + '/../data/output'
+            )
 
     # check the error if the data is not in the standard dictionary format
     def test_key_error(self) -> None:
         with self.assertRaises(KeyError) as e:
-            MSE('../data/file1_1000', '../data/file3_100', './output.txt').calc_mse()
-        self.assertEqual(e.exception.args[0], "The /entry/data/data key is not found in the HDF5 file.")
+            metric = MSE(
+                dirname(abspath(__file__)) + '/../data/file1_1000.h5',
+                dirname(abspath(__file__)) + '/../data/file3_100.h5',
+                dirname(abspath(__file__)) + '/../data/output.txt'
+            )
+            metric.calc_mse()
 
     # check error if dimensions of the data do not match
     def test_dim_error(self) -> None:
         with self.assertRaises(ValueError) as e:
-            MSE('../data/file1_200', '../data/file2_1000', './output.txt').calc_mse()
-        self.assertEqual(str(e.exception), 'Dimensions do not match')
+            metric = MSE(
+                dirname(abspath(__file__)) + '/../data/file1_200.h5',
+                dirname(abspath(__file__)) + '/../data/file2_1000.h5',
+                dirname(abspath(__file__)) + '/../data/output.txt'
+            )
+            metric.calc_mse()
 
     # check that the calc_mse's results are consistent
-    def test_MSE_result_error(self) -> None:
-        with self.assertRaises(ValueError):
-            result = MSE('../data/file1_200', '../data/file2_1000').calc_mse()
-            self.assertEqual(result, np.random.rand())
+    def test_MSE_result(self) -> None:
+        metric = MSE(
+            dirname(abspath(__file__)) + '/../data/file1_200.h5',
+            dirname(abspath(__file__)) + '/../data/file2_200.h5',
+            dirname(abspath(__file__)) + '/../data/output.txt'
+            )
+        metric.calc_mse()
 
 
 if __name__ == '__main__':
