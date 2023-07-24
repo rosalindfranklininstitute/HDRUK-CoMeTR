@@ -36,56 +36,81 @@ class MSE:
             """
 
     def __init__(
-            self, file1: str = '',
+            self,
+            file1: str,
+            file2: str ,
             file1_key: str = '/entry/data/data',
-            file2: str = '',
             file2_key: str = '/entry/data/data',
-            output_text: str = ''
+            output_text: str = 'output.txt'
     ):
+        MSE.check_file_exists(file1)
+        MSE.is_h5py_file(file1)
+        MSE.is_key_valid(file1, file1_key)
         self.file1 = file1
         self.file1_key = file1_key
+
+        MSE.check_file_exists(file2)
+        MSE.is_h5py_file(file2)
+        MSE.is_key_valid(file2, file2_key)
         self.file2 = file2
         self.file2_key = file2_key
-        self.output_text = output_text
-        self.check_file_exists()
-        self.is_h5py_file()
-        self.verify_output_file()
 
+        MSE.is_txt(output_text)
+        self.output_text = output_text
     # check if the file exists
-    def check_file_exists(self):
-        if not os.path.exists(self.file1) or not os.path.exists(self.file2):
-            raise FileNotFoundError("File not found")
+    @staticmethod
+    def check_file_exists(inp):
+        if not os.path.exists(inp):
+            raise FileNotFoundError(f"{inp} file cannot be found")
 
     # check if the file is a h5py file
-    def is_h5py_file(self):
-        if not h5py.is_hdf5(self.file1) or not h5py.is_hdf5(self.file2):
-            raise TypeError("One or both files are not in HDF5 format.")
+    @staticmethod
+    def is_h5py_file(inp):
+        if not h5py.is_hdf5(inp):
+            raise TypeError(f"{inp} is a HDF5 file.")
 
-        if self.file1[-3:] != '.h5' or self.file2[-3:] != '.h5':
-            raise NameError('The files do have .h5 extension')
+        if inp[-3:] != '.h5':
+            raise NameError(f"{inp} does not have a .h5 extension")
 
-    def verify_output_file(self):
-        if not self.output_text.endswith('.txt'):
-            raise ValueError("The output file must be in .txt format.")
+    @staticmethod
+    def is_txt(inp):
+        if inp[-4:] != '.txt':
+            raise NameError(f"{inp} does not have a .txt extension")
 
-    # calculate the mean squared error
+    @staticmethod
+    def is_key_valid(filename: str, test_key: str) -> None:
+        """Test if given key exists in the input .h5 filename
 
+            Args:
+                filename (string): Input filename of .h5 file
+
+                test_key (string): Key to be tested, if it is included in the filename .h5 file
+
+        """
+        def all_keys(obj):
+            keys = (obj.name,)
+            if isinstance(obj, h5py.Group):
+                for key, value in obj.items():
+                    if isinstance(value, h5py.Group):
+                        keys = keys + all_keys(value)
+                    else:
+                        keys = keys + (value.name,)
+            return keys
+
+        f = h5py.File(filename, "r")
+        list_of_keys = all_keys(f)
+        f.close()
+        if test_key not in list_of_keys:
+            raise NameError(f"{test_key} is not a valid key in the {filename} file")
+   # calculate the mean squared error
     def calc_mse(self):
 
         read_file1 = h5py.File(self.file1, 'r')
         read_file2 = h5py.File(self.file2, 'r')
 
-        if "/entry/data/data" not in read_file1.keys() or "/entry/data/data" not in read_file2.keys():
-            raise KeyError("The /entry/data/data key is not found in the HDF5 file.")
 
-        try:
-            file_1_data = read_file1[self.file1_key][:]
-        except NameError:
-            print(f'The {self.file1_key} key is not present in {self.file1}')
-        try:
-            file_2_data = read_file2[self.file2_key][:]
-        except NameError:
-            print(f'The {self.file2_key} key is not present in {self.file2}')
+        file_1_data = read_file1[self.file1_key][:]
+        file_2_data = read_file2[self.file2_key][:]
 
         # display shape of the file data for both files
         if file_1_data.shape != file_2_data.shape:
@@ -108,9 +133,7 @@ class MSE:
         read_file1.close()
         read_file2.close()
 
-        if self.output_text != '':
-            with open(self.output_text, 'w') as output_file:
-                np.savetxt(output_file, [mse], fmt='%s', delimiter='', newline='')
+        np.savetxt(self.output_text, [mse], fmt='%s', delimiter='', newline='')
 
         return mse
 
@@ -118,10 +141,10 @@ class MSE:
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Calculate the MSE of two numpy arrays')
     parser.add_argument("-f1", '--file1', required=True, help='Path to first file')
-    parser.add_argument("-k1", '--filekey1', required=True, help='Key to data in the first file')
     parser.add_argument("-f2", '--file2', required=True, help='Path to second file')
-    parser.add_argument("-k2", '--filekey2', required=True, help='Key to data in the second file')
+    parser.add_argument("-k1", '--filekey1', default='/entry/data/data', help='Key to data in the first file')
+    parser.add_argument("-k2", '--filekey2', default='/entry/data/data', help='Key to data in the second file')
     parser.add_argument("-f3", '--output_text', required=True)
     args = parser.parse_args()
-    mse_instance = MSE(args.file1, args.filekey1, args.file2, args.filekey2, args.output_text)
+    mse_instance = MSE(args.file1, args.file2, args.filekey1, args.filekey2, args.output_text)
     call_func = mse_instance.calc_mse()
