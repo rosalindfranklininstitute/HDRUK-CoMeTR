@@ -12,7 +12,9 @@ class MSETest(unittest.TestCase):
         with self.assertRaises(FileNotFoundError) as e:
             metric = MSE(
                 dirname(abspath(__file__)) + '/../data/file3_300.h5',
+                '/entry/data/data',
                 dirname(abspath(__file__)) + '/../data/file2_1000.h5',
+                '/entry/data/data',
                 dirname(abspath(__file__)) + '/../data/output.txt'
             )
 
@@ -21,14 +23,18 @@ class MSETest(unittest.TestCase):
         with self.assertRaises(TypeError) as e:
             metric = MSE(
                 dirname(abspath(__file__)) + '/../data/output.txt',
+                '/entry/data/data',
                 dirname(abspath(__file__)) + '/../data/file2_1000.h5',
+                '/entry/data/data',
                 dirname(abspath(__file__)) + '/../data/output.txt'
             )
 
         with self.assertRaises(NameError) as e:
             metric = MSE(
                 dirname(abspath(__file__)) + '/../data/file4_100',
+                '/entry/data/data',
                 dirname(abspath(__file__)) + '/../data/file2_1000.h5',
+                '/entry/data/data',
                 dirname(abspath(__file__)) + '/../data/output.txt'
             )
 
@@ -37,7 +43,9 @@ class MSETest(unittest.TestCase):
         with self.assertRaises(ValueError) as e:
             metric = MSE(
                 dirname(abspath(__file__)) + '/../data/file1_1000.h5',
+                '/entry/data/data',
                 dirname(abspath(__file__)) + '/../data/file2_1000.h5',
+                '/entry/data/data',
                 dirname(abspath(__file__)) + '/../data/output'
             )
 
@@ -46,7 +54,9 @@ class MSETest(unittest.TestCase):
         with self.assertRaises(KeyError) as e:
             metric = MSE(
                 dirname(abspath(__file__)) + '/../data/file1_1000.h5',
+                '/entry/data/data',
                 dirname(abspath(__file__)) + '/../data/file3_100.h5',
+                '/entry/data/data',
                 dirname(abspath(__file__)) + '/../data/output.txt'
             )
             metric.calc_mse()
@@ -56,7 +66,9 @@ class MSETest(unittest.TestCase):
         with self.assertRaises(ValueError) as e:
             metric = MSE(
                 dirname(abspath(__file__)) + '/../data/file1_200.h5',
+                '/entry/data/data',
                 dirname(abspath(__file__)) + '/../data/file2_1000.h5',
+                '/entry/data/data',
                 dirname(abspath(__file__)) + '/../data/output.txt'
             )
             metric.calc_mse()
@@ -65,7 +77,9 @@ class MSETest(unittest.TestCase):
     def test_MSE_result(self) -> None:
         metric = MSE(
             dirname(abspath(__file__)) + '/../data/file1_200.h5',
+            '/entry/data/data',
             dirname(abspath(__file__)) + '/../data/file2_200.h5',
+            '/entry/data/data',
             dirname(abspath(__file__)) + '/../data/output.txt'
             )
         metric.calc_mse()

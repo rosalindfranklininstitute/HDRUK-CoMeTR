@@ -35,9 +35,17 @@ class MSE:
 
             """
 
-    def __init__(self, file1: str = '', file2: str = '', output_text: str = ''):
+    def __init__(
+            self, file1: str = '',
+            file1_key: str = '/entry/data/data',
+            file2: str = '',
+            file2_key: str = '/entry/data/data',
+            output_text: str = ''
+    ):
         self.file1 = file1
+        self.file1_key = file1_key
         self.file2 = file2
+        self.file2_key = file2_key
         self.output_text = output_text
         self.check_file_exists()
         self.is_h5py_file()
@@ -70,8 +78,14 @@ class MSE:
         if "/entry/data/data" not in read_file1.keys() or "/entry/data/data" not in read_file2.keys():
             raise KeyError("The /entry/data/data key is not found in the HDF5 file.")
 
-        file_1_data = read_file1['/entry/data/data'][:]
-        file_2_data = read_file2['/entry/data/data'][:]
+        try:
+            file_1_data = read_file1[self.file1_key][:]
+        except NameError:
+            print(f'The {self.file1_key} key is not present in {self.file1}')
+        try:
+            file_2_data = read_file2[self.file2_key][:]
+        except NameError:
+            print(f'The {self.file2_key} key is not present in {self.file2}')
 
         # display shape of the file data for both files
         if file_1_data.shape != file_2_data.shape:
@@ -104,8 +118,10 @@ class MSE:
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Calculate the MSE of two numpy arrays')
     parser.add_argument("-f1", '--file1', required=True, help='Path to first file')
+    parser.add_argument("-k1", '--filekey1', required=True, help='Key to data in the first file')
     parser.add_argument("-f2", '--file2', required=True, help='Path to second file')
+    parser.add_argument("-k2", '--filekey2', required=True, help='Key to data in the second file')
     parser.add_argument("-f3", '--output_text', required=True)
     args = parser.parse_args()
-    mse_instance = MSE(args.file1, args.file2, args.output_text)
+    mse_instance = MSE(args.file1, args.filekey1, args.file2, args.filekey2, args.output_text)
     call_func = mse_instance.calc_mse()
