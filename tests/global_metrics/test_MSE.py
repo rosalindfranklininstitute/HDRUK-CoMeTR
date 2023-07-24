@@ -1,12 +1,34 @@
 import unittest
 from os.path import dirname, abspath
+
 from cometr.global_metrics.MSE import MSE
 
 
 class MSETest(unittest.TestCase):
+    """
+    Test cases for the Mean Squared Error (MSE) calculation.
 
-    # check error if the file does not exist
+    Each test case checks various scenarios, including file existence, file format, key validity,
+    data dimensions, and consistency of MSE calculation.
+
+    The test cases are designed to cover different potential errors and validate the accuracy of the
+    MSE calculation.
+
+    Please ensure that the test data files are appropriately set up in the specified locations for
+    the test cases to run successfully.
+
+    Note: These tests should be run using the unittest framework.
+
+    Example:
+        To run the tests, use the following command:
+        pytest --cov=cometr --cov-report term-missing
+                    OR
+        $ python -m unittest test_mse.py
+    """
+
+    # Check error if the file does not exist
     def test_file_not_found_error(self) -> None:
+        """Test if FileNotFoundError is raised when a file does not exist."""
         with self.assertRaises(FileNotFoundError):
             metric = MSE(
                 dirname(abspath(__file__)) + '/../data/file3_300.h5',
@@ -16,8 +38,9 @@ class MSETest(unittest.TestCase):
                 dirname(abspath(__file__)) + '/../data/output.txt'
             )
 
-    # check the error if one of the files is not in h5py format
+    # Check the error if one of the files is not in h5py format
     def test_h5pyfile(self) -> None:
+        """Test if TypeError and NameError are raised when files are not in h5py format."""
         with self.assertRaises(TypeError):
             metric = MSE(
                 dirname(abspath(__file__)) + '/../data/output.txt',
@@ -36,9 +59,10 @@ class MSETest(unittest.TestCase):
                 dirname(abspath(__file__)) + '/../data/output.txt'
             )
 
-    # check the error if the output file format is not txt
+    # Check the error if the output file format is not txt
     def test_outputfile(self) -> None:
-        with self.assertRaises(ValueError):
+        """Test if NameError is raised when the output file format is not '.txt'."""
+        with self.assertRaises(NameError):
             metric = MSE(
                 dirname(abspath(__file__)) + '/../data/file1_1000.h5',
                 dirname(abspath(__file__)) + '/../data/file2_1000.h5',
@@ -47,8 +71,9 @@ class MSETest(unittest.TestCase):
                 dirname(abspath(__file__)) + '/../data/output'
             )
 
-    # check the error if the data is not in the standard dictionary format
+    # Check the error if the data is not in the standard dictionary format
     def test_key_error(self) -> None:
+        """Test if NameError is raised when the data key is not valid in the HDF5 file."""
         with self.assertRaises(NameError):
             metric = MSE(
                 dirname(abspath(__file__)) + '/../data/file1_1000.h5',
@@ -59,8 +84,9 @@ class MSETest(unittest.TestCase):
             )
             metric.calc_mse()
 
-    # check error if dimensions of the data do not match
+    # Check error if dimensions of the data do not match
     def test_dim_error(self) -> None:
+        """Test if ValueError is raised when the dimensions of the data do not match."""
         with self.assertRaises(ValueError):
             metric = MSE(
                 dirname(abspath(__file__)) + '/../data/file1_200.h5',
@@ -71,16 +97,17 @@ class MSETest(unittest.TestCase):
             )
             metric.calc_mse()
 
-    # check that the calc_mse's results are consistent
+    # Check that the calc_mse's results are consistent
     @staticmethod
     def test_MSE_result() -> None:
+        """Test the consistency of the calc_mse() results."""
         metric = MSE(
             dirname(abspath(__file__)) + '/../data/file1_200.h5',
             dirname(abspath(__file__)) + '/../data/file2_200.h5',
             '/entry/data/data',
             '/entry/data/data',
             dirname(abspath(__file__)) + '/../data/output.txt'
-            )
+        )
         metric.calc_mse()
 
 
