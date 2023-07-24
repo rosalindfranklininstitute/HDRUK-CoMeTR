@@ -2,9 +2,10 @@ import os
 import argparse
 import h5py
 import numpy as np
-import logging
+
 
 from sklearn.metrics import mean_squared_error
+from beartype import beartype
 
 
 # function that reads two files and returns their mean square error
@@ -35,12 +36,14 @@ class MSE:
 
             """
 
+   # @beartype
     def __init__(
-            self, file1: str = '',
+            self,
+            file1: str,
+            file2: str,
             file1_key: str = '/entry/data/data',
-            file2: str = '',
             file2_key: str = '/entry/data/data',
-            output_text: str = ''
+            output_text: str = 'output.txt'
     ):
         self.file1 = file1
         self.file1_key = file1_key
@@ -52,11 +55,13 @@ class MSE:
         self.verify_output_file()
 
     # check if the file exists
+   # @beartype
     def check_file_exists(self):
         if not os.path.exists(self.file1) or not os.path.exists(self.file2):
             raise FileNotFoundError("File not found")
 
     # check if the file is a h5py file
+   # @beartype
     def is_h5py_file(self):
         if not h5py.is_hdf5(self.file1) or not h5py.is_hdf5(self.file2):
             raise TypeError("One or both files are not in HDF5 format.")
@@ -64,12 +69,14 @@ class MSE:
         if self.file1[-3:] != '.h5' or self.file2[-3:] != '.h5':
             raise NameError('The files do have .h5 extension')
 
+   # @beartype
     def verify_output_file(self):
         if not self.output_text.endswith('.txt'):
             raise ValueError("The output file must be in .txt format.")
 
     # calculate the mean squared error
 
+   # @beartype
     def calc_mse(self):
 
         read_file1 = h5py.File(self.file1, 'r')
@@ -118,9 +125,9 @@ class MSE:
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Calculate the MSE of two numpy arrays')
     parser.add_argument("-f1", '--file1', required=True, help='Path to first file')
-    parser.add_argument("-k1", '--filekey1', required=True, help='Key to data in the first file')
+    parser.add_argument("-k1", '--filekey1', required=False, help='Key to data in the first file')
     parser.add_argument("-f2", '--file2', required=True, help='Path to second file')
-    parser.add_argument("-k2", '--filekey2', required=True, help='Key to data in the second file')
+    parser.add_argument("-k2", '--filekey2', required=False, help='Key to data in the second file')
     parser.add_argument("-f3", '--output_text', required=True)
     args = parser.parse_args()
     mse_instance = MSE(args.file1, args.filekey1, args.file2, args.filekey2, args.output_text)
