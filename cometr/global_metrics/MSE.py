@@ -28,9 +28,9 @@ class MSE:
 
     Example:
         Usage::
-            >>> from mse_calculator import MSE
-            >>> mse_instance = MSE('file1.h5', 'file2.h5', output_text='output.txt')
-            >>> result = mse_instance.calc_mse()
+            from MSE import MSE
+            mse_instance = MSE('file1.h5', 'file2.h5', output_text='output.txt')
+            result = mse_instance.calc_mse()
     """
 
     @beartype
@@ -142,7 +142,7 @@ class MSE:
             raise NameError(f"{test_key} is not a valid key in the {filename} file")
 
     @beartype
-    def calc_mse(self) -> float:
+    def calc_mse(self) -> np.float32:
         """Calculates the mean squared error of the two numpy arrays and saves the result to the specified text file.
 
         Returns:
