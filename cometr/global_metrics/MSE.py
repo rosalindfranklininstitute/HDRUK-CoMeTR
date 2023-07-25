@@ -142,7 +142,7 @@ class MSE:
             raise NameError(f"{test_key} is not a valid key in the {filename} file")
 
     @beartype
-    def calc_mse(self) -> float:
+    def calc_mse(self) -> np.float32:
         """Calculates the mean squared error of the two numpy arrays and saves the result to the specified text file.
 
         Returns:
@@ -177,7 +177,7 @@ class MSE:
 
         np.savetxt(self.output_text, [mse], fmt='%s', delimiter='', newline='')
 
-        return float(mse)
+        return mse
 
 
 if __name__ == '__main__':
