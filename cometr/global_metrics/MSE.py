@@ -10,29 +10,11 @@ from sklearn.metrics import mean_squared_error
 class MSE:
     """Calculates the Mean Squared Error (MSE) between two HDF5 files containing voxel data.
 
-    Args:
-        file1 (str): Path to the first HDF5 file. Required command-line argument: -f1/--file1.
-        file2 (str): Path to the second HDF5 file. Required command-line argument: -f2/--file2.
-        file1_key (str, optional): Key to the voxel data in the first file. Defaults to '/entry/data/data'.
-        file2_key (str, optional): Key to the voxel data in the second file. Defaults to '/entry/data/data'.
-        output_text (str, optional): Path to the output text file for saving the result. Defaults to 'output.txt'.
+    This class provides a convenient way to calculate the MSE between voxel data
+    stored in two HDF5 files. It reads the data from both files, checks for validity,
+    calculates the MSE, and stores the result in a specified text file.
 
-    Returns:
-        str: The path to the output text file if `output_text` is provided, otherwise an empty string.
-
-    Raises:
-        FileNotFoundError: If either `file1` or `file2` is not found.
-        h5py.FileError: If there is an error reading the HDF5 file.
-        ValueError: If the voxel data in both files do not have matching dimensions.
-        Exception: If an unexpected error occurs.
-
-    Example:
-        Usage::
-            from MSE import MSE
-            mse_instance = MSE('file1.h5', 'file2.h5', output_text='output.txt')
-            result = mse_instance.calc_mse()
     """
-
     @beartype
     def __init__(
             self,
@@ -41,15 +23,20 @@ class MSE:
             file1_key: str = '/entry/data/data',
             file2_key: str = '/entry/data/data',
             output_text: str = 'output.txt'
-    ):
+    ) -> None:
         """Initializes the `MSE` class.
 
         Args:
             file1 (str): Path to the first HDF5 file.
+
             file2 (str): Path to the second HDF5 file.
+
             file1_key (str, optional): Key to the voxel data in the first file. Defaults to '/entry/data/data'.
+
             file2_key (str, optional): Key to the voxel data in the second file. Defaults to '/entry/data/data'.
+
             output_text (str, optional): Path to the file to store the result. Defaults to 'output.txt'.
+
         """
         MSE.check_file_exists(file1)
         MSE.is_h5py_file(file1)
@@ -76,6 +63,7 @@ class MSE:
 
         Raises:
             FileNotFoundError: If the file does not exist.
+
         """
         if not os.path.exists(inp):
             raise FileNotFoundError(f"{inp} file cannot be found")
@@ -91,6 +79,7 @@ class MSE:
         Raises:
             TypeError: If the file is not a valid HDF5 file.
             NameError: If the file does not have a .h5 extension.
+
         """
         if not h5py.is_hdf5(inp):
             raise TypeError(f"{inp} is not a HDF5 file.")
@@ -108,6 +97,7 @@ class MSE:
 
         Raises:
             NameError: If the output file does not have a .txt extension.
+
         """
         if inp[-4:] != '.txt':
             raise NameError(f"{inp} does not have a .txt extension")
@@ -123,9 +113,11 @@ class MSE:
 
         Raises:
             NameError: If the key is not a valid key in the .h5 file.
+
         """
 
         def all_keys(obj):
+            """Returns a list of all the keys in the object, recursively."""
             keys = (obj.name,)
             if isinstance(obj, h5py.Group):
                 for key, value in obj.items():
@@ -147,6 +139,7 @@ class MSE:
 
         Returns:
             float: The mean squared error of the two numpy arrays.
+
         """
         read_file1 = h5py.File(self.file1, 'r')
         read_file2 = h5py.File(self.file2, 'r')

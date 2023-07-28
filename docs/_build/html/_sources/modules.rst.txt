@@ -1,4 +1,4 @@
-cometr
+ometr
 ======
 
 .. toctree::
