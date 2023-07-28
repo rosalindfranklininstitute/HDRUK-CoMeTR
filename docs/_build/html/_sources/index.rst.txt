@@ -56,6 +56,12 @@ To use CoMeTR, import the relevant modules and functions:
 
     # Now you can use the CoMeTR functions
 
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+    modules
+
 Indices and Tables
 ------------------
 
@@ -74,19 +80,13 @@ CoMeTR's source code is hosted on GitHub. You can find the repository and report
 Contributing
 ------------
 
-We welcome contributions to CoMeTR! If you want to contribute, please follow the guidelines outlined in the CONTRIBUTING.md file.
+We welcome contributions to CoMeTR! If you want to contribute, please contact Dimitrios Bellos via email - Dimitrios.Bellos@rfi.ac.uk
 
 License
 -------
 
 CoMeTR is distributed under the Apache 2.0 license. See the LICENSE file for more details.
 
-Indices and Tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
 
 Command-Line Utilities
 ----------------------
