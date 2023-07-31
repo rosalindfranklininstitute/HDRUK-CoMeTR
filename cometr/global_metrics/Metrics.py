@@ -7,16 +7,9 @@ from beartype import beartype
 from sklearn.metrics import mean_squared_error
 
 
-class MSE:
-    """Calculates the Mean Squared Error (MSE) between two HDF5 files containing voxel data.
+class Metrics:
+    """Super class for calculating metrics between two datasets."""
 
-    This class provides a convenient way to calculate the MSE between voxel data
-    stored in two HDF5 files. It reads the data from both files, checks for validity,
-    calculates the MSE, and stores the result in a specified text file.
-
-    """
-
-    @beartype
     def __init__(
         self,
         file1: str,
@@ -25,7 +18,7 @@ class MSE:
         file2_key: str = "/entry/data/data",
         output_text: str = "output.txt",
     ) -> None:
-        """Initializes the `MSE` class.
+        """Initializes the `Metrics` class.
 
         Args:
             file1 (str): Path to the first HDF5 file.
@@ -39,20 +32,24 @@ class MSE:
             output_text (str, optional): Path to the file to store the result. Defaults to 'output.txt'.
 
         """
-        MSE.check_file_exists(file1)
-        MSE.is_h5py_file(file1)
-        MSE.is_key_valid(file1, file1_key)
+        Metrics.check_file_exists(file1)
+        Metrics.is_h5py_file(file1)
+        Metrics.is_key_valid(file1, file1_key)
         self.file1 = file1
         self.file1_key = file1_key
 
-        MSE.check_file_exists(file2)
-        MSE.is_h5py_file(file2)
-        MSE.is_key_valid(file2, file2_key)
+        Metrics.check_file_exists(file2)
+        Metrics.is_h5py_file(file2)
+        Metrics.is_key_valid(file2, file2_key)
         self.file2 = file2
         self.file2_key = file2_key
 
-        MSE.is_txt(output_text)
+        Metrics.is_txt(output_text)
         self.output_text = output_text
+
+        # Open the HDF5 files for reading
+        self.read_file1 = h5py.File(self.file1, "r")
+        self.read_file2 = h5py.File(self.file2, "r")
 
     @staticmethod
     @beartype
@@ -134,21 +131,25 @@ class MSE:
         if test_key not in list_of_keys:
             raise NameError(f"{test_key} is not a valid key in the {filename} file")
 
+
+class MSE(Metrics):
     @beartype
-    def calc_mse(self) -> float:
+    def calc(self) -> float:
         """Calculates the mean squared error of the two numpy arrays and saves the result to the specified text file.
 
         Returns:
             float: The mean squared error of the two numpy arrays.
 
         """
-        read_file1 = h5py.File(self.file1, "r")
-        read_file2 = h5py.File(self.file2, "r")
 
-        file_1_data = read_file1[self.file1_key][:]
-        file_2_data = read_file2[self.file2_key][:]
+        file_1_data = self.read_file1[self.file1_key][:]
+        file_2_data = self.read_file2[self.file2_key][:]
 
-        # Display shape of the file data for both files
+        # Close both files
+        self.read_file1.close()
+        self.read_file2.close()
+
+        # check dimensions of the files
         if file_1_data.shape != file_2_data.shape:
             raise ValueError("Dimensions do not match")
 
@@ -168,10 +169,6 @@ class MSE:
             mse,
         )
 
-        # Close both files
-        read_file1.close()
-        read_file2.close()
-
         np.savetxt(self.output_text, [mse], fmt="%s", delimiter="", newline="")
 
         return float(mse)
@@ -179,7 +176,7 @@ class MSE:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Calculate the MSE of two numpy arrays"
+        description="Calculate the given metrics of two h5py files"
     )
     parser.add_argument("-f1", "--file1", required=True, help="Path to the first file")
     parser.add_argument("-f2", "--file2", required=True, help="Path to the second file")
@@ -202,4 +199,4 @@ if __name__ == "__main__":
     mse_instance = MSE(
         args.file1, args.file2, args.filekey1, args.filekey2, args.output_text
     )
-    call_func = mse_instance.calc_mse()
+    call_func = mse_instance.calc()
