@@ -134,44 +134,29 @@ class Metrics:
             raise NameError(f"{test_key} is not a valid key in the {filename} file")
 
     # @staticmethod
-    def metric_calc(self, file1_data, file2_data):
-        pass
-
-    @staticmethod
     @beartype
-    def load_files(
-            file1: str,
-            file2: str,
-            file1_key: str = '/entry/data/data',
-            file2_key: str = '/entry/data/data'
-    ) -> tuple[np.ndarray, np.ndarray]:
+    def load_files(self) -> tuple[np.ndarray, np.ndarray]:
         """Load data from two HDF5 files and return the corresponding numpy arrays.
-
-        Args:
-            file1 (str): Path to the first HDF5 file.
-
-            file2 (str): Path to the second HDF5 file
-
-            file1_key (str, optional): path to the data in the first file. Defaults to '/entry/data/data'.
-
-            file2_key (str, optional): path to the data in the second file. Defaults to '/entry/data/data'.
 
         Returns:
             file1_arr and file2_arr (Tuple[np.ndarray, np.ndarray]): A tuple containing two numpy arrays.
 
         """
         # Load both h5 files
-        file1_ = h5py.File(file1, "r")
-        file2_ = h5py.File(file2, "r")
+        file1_ = h5py.File(self.file1, "r")
+        file2_ = h5py.File(self.file2, "r")
 
         # Get data location from both files
-        file_1_data = file1_[file1_key][:]
-        file_2_data = file2_[file2_key][:]
+        file_1_data = file1_[self.file1_key][:]
+        file_2_data = file2_[self.file2_key][:]
 
         # close both files
         file1_.close()
         file2_.close()
         return file_1_data, file_2_data
+
+    def metric_calc(self, file1_data, file2_data):
+        pass
 
     @beartype
     def calc(self) -> float:
@@ -182,7 +167,7 @@ class Metrics:
 
         """
 
-        file_1_data, file_2_data = Metrics.load_files(self.file1, self.file2)
+        file_1_data, file_2_data = self.load_files()
 
         # Display shape of the file data for both files
         if file_1_data.shape != file_2_data.shape:

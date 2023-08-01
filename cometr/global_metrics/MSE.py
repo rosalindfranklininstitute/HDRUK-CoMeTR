@@ -26,7 +26,6 @@ class MSE(Metrics):
             output_text='output.txt'
     ):
         super().__init__(file1, file2, file1_key, file2_key, output_text)
-        # self.file1_data, self.file2_data = self.load_files(file1, file2, file1_key, file2_key)
 
     def metric_calc(self, file1_data, file2_data):
         """Calculates the mean squared error of the two numpy arrays and saves the result to the specified text file.
@@ -49,7 +48,3 @@ if __name__ == '__main__':
     parser.add_argument("-f3", '--output_text', default='output.txt', help='File to store result')
     args = parser.parse_args()
     call_func = MSE(args.file1, args.file2, args.file1_key, args.file2_key, args.output_text).calc()
-    print(call_func)
-
-
-
