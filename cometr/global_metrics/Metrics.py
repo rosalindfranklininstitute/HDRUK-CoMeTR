@@ -154,18 +154,30 @@ class Metrics:
         file2_.close()
         return file_1_data, file_2_data
 
-    def metric_calc(self, file1_data, file2_data):
+    @beartype
+    def metric_calc(self, file1_data: np.ndarray, file2_data: np.ndarray) -> None:
+        """Calculates the loss metrics of the two numpy arrays.
+
+        Args:
+            file1_data (np.ndarray): The numpy array containing voxel data from the first file.
+
+            file2_data (np.ndarray): The numpy array containing voxel data from the second file.
+
+        Returns:
+            None
+
+        """
         pass
 
     @beartype
     def calc(self) -> float:
-        """Calculates the mean squared error of the two numpy arrays and saves the result to the specified text file.
+        """Gets the mean squared error of the two numpy arrays and saves the result to the specified text file.
 
         Returns:
             float: The mean squared error of the two numpy arrays.
 
         """
-
+        # load voxel data arrays of both files
         file_1_data, file_2_data = self.load_files()
 
         # Display shape of the file data for both files

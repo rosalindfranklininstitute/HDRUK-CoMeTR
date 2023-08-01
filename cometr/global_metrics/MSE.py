@@ -1,19 +1,17 @@
 import argparse
-import time
 
+import numpy as np
 import torch
+from beartype import beartype
 from torchmetrics.regression import MeanSquaredError
+
 from cometr.global_metrics.Metrics import Metrics
 
 
 class MSE(Metrics):
     """Calculates the Mean Squared Error (MSE) between two HDF5 files containing voxel data.
+    """
 
-        This class provides a convenient way to calculate the MSE between voxel data
-        stored in two HDF5 files. It reads the data from both files, checks for validity,
-        calculates the MSE, and stores the result in a specified text file.
-
-        """
     def __init__(
             self,
             file1,
@@ -24,21 +22,26 @@ class MSE(Metrics):
     ):
         super().__init__(file1, file2, file1_key, file2_key, output_text)
 
-    def metric_calc(self, file1_data, file2_data):
-        start = time.time()
+    @beartype
+    def metric_calc(self, file1_data: np.ndarray, file2_data: np.ndarray) -> float:
         """Calculates the mean squared error of the two numpy arrays and saves the result to the specified text file.
+
+        Args:
+            file1_data (np.ndarray): The numpy array containing voxel data from the first file.
+
+            file2_data (np.ndarray): The numpy array containing voxel data from the second file.
 
         Returns:
             float: The mean squared error of the two numpy arrays.
 
         """
+
         file1_data = torch.tensor(file1_data)
         file2_data = torch.tensor(file2_data)
 
         mean_squared_error = MeanSquaredError()
         mse = mean_squared_error(file1_data, file2_data)
-        end = time.time()
-        print(f"runtime: {end-start}")
+
         return float(mse)
 
 
