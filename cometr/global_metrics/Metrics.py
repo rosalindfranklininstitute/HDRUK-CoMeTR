@@ -4,7 +4,7 @@ import os
 import h5py
 import numpy as np
 from beartype import beartype
-
+import torch
 
 class Metrics:
     """Calculates the Mean Squared Error (MSE) between two HDF5 files containing voxel data.
@@ -155,7 +155,7 @@ class Metrics:
         return file_1_data, file_2_data
 
     @beartype
-    def metric_calc(self, file1_data: np.ndarray, file2_data: np.ndarray) -> None:
+    def metric_calc(self, file1_data: torch.Tensor, file2_data: torch.Tensor) -> None:
         """Calculates the loss metrics of the two numpy arrays.
 
         Args:
@@ -183,10 +183,13 @@ class Metrics:
         # Display shape of the file data for both files
         if file_1_data.shape != file_2_data.shape:
             raise ValueError('Dimensions do not match')
+        # convert arrays into tensors
+        file_1_data = torch.Tensor(file_1_data)
+        file_2_data = torch.Tensor(file_2_data)
 
-        # reshape the both data arrays
-        file1_arr_reshaped = np.reshape(file_1_data, (file_1_data.shape[0], -1))
-        file2_arr_reshaped = np.reshape(file_2_data, (file_2_data.shape[0], -1))
+        # reshape the both tensors
+        file1_arr_reshaped = file_1_data.view(file_1_data.shape[0], -1)
+        file2_arr_reshaped = file_2_data.view(file_2_data.shape[0], -1)
 
         file1_name = os.path.basename(self.file1)
         file2_name = os.path.basename(self.file2)

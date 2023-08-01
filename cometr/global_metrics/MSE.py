@@ -1,5 +1,5 @@
 import argparse
-
+import time
 import numpy as np
 import torch
 from beartype import beartype
@@ -23,7 +23,7 @@ class MSE(Metrics):
         super().__init__(file1, file2, file1_key, file2_key, output_text)
 
     @beartype
-    def metric_calc(self, file1_data: np.ndarray, file2_data: np.ndarray) -> float:
+    def metric_calc(self, file1_data: torch.Tensor, file2_data: torch.Tensor) -> float:
         """Calculates the mean squared error of the two numpy arrays and saves the result to the specified text file.
 
         Args:
@@ -35,13 +35,13 @@ class MSE(Metrics):
             float: The mean squared error of the two numpy arrays.
 
         """
-
-        file1_data = torch.tensor(file1_data)
-        file2_data = torch.tensor(file2_data)
-
+        start = time.time()
+        # device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         mean_squared_error = MeanSquaredError()
+        # mean_squared_error = mean_squared_error.to(device)
         mse = mean_squared_error(file1_data, file2_data)
-
+        end = time.time()
+        print(f"runtime:{end-start}")
         return float(mse)
 
 
