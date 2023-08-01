@@ -1,10 +1,13 @@
 import argparse
 import os
+import torch
 
 import h5py
 import numpy as np
 from beartype import beartype
 from sklearn.metrics import mean_squared_error
+from torch import tensor
+from torchmetrics.regression import MeanSquaredError
 
 
 class Metrics:
@@ -150,28 +153,46 @@ class MSE(Metrics):
         self.read_file2.close()
 
         # check dimensions of the files
-        if file_1_data.shape != file_2_data.shape:
-            raise ValueError("Dimensions do not match")
+        # if file_1_data.shape != file_2_data.shape:
+        # raise ValueError("Dimensions do not match")
 
         file1_name = os.path.basename(self.file1)
         file2_name = os.path.basename(self.file2)
         print(f"The shape of the {file1_name} file is {file_1_data.shape}")
         print(f"The shape of the {file2_name} file is {file_2_data.shape}")
 
-        # Convert data from 3D to 2D numpy arrays to use MSE metric
-        file1_2d = np.reshape(file_1_data, (file_1_data.shape[0], -1))
-        file2_2d = np.reshape(file_2_data, (file_2_data.shape[0], -1))
+        # check for GPU
+        # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        torch.set_default_device(device)
+
+        # Convert data to tensors
+        file1_tensor = tensor(file_1_data, device=device)
+        file2_tensor = tensor(file_2_data, device=device)
+
+        # file1_2d = np.reshape(file_1_data, (file_1_data.shape[0], -1))
+        # file2_2d = np.reshape(file_2_data, (file_2_data.shape[0], -1))
+
+        # Reshape the tensors to 1D vectors
+        file1_tensor_reshaped = file1_tensor.view(-1)
+        file2_tensor_reshaped = file2_tensor.view(-1)
 
         # Calculate the mean squared error
-        mse = mean_squared_error(file1_2d, file2_2d)
+        # mse = mean_squared_error(file1_2d, file2_2d)
+        mse = MeanSquaredError().to(device)
+        result = mse(file1_tensor_reshaped, file2_tensor_reshaped)
+
+        # convert result to float
+        final_result = result.item()
+
         print(
             f"The Mean Squared Error between the {file1_name} and {file2_name} is:\n",
-            mse,
+            final_result,
         )
 
-        np.savetxt(self.output_text, [mse], fmt="%s", delimiter="", newline="")
+        np.savetxt(self.output_text, [final_result], fmt="%s", delimiter="", newline="")
 
-        return float(mse)
+        return final_result
 
 
 if __name__ == "__main__":
@@ -199,4 +220,5 @@ if __name__ == "__main__":
     mse_instance = MSE(
         args.file1, args.file2, args.filekey1, args.filekey2, args.output_text
     )
+
     call_func = mse_instance.calc()
