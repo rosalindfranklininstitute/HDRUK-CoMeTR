@@ -1,11 +1,6 @@
 import argparse
-import os
 
-import h5py
-import numpy as np
-from beartype import beartype
 from sklearn.metrics import mean_squared_error
-
 from cometr.global_metrics.Metrics import Metrics
 
 
@@ -34,6 +29,7 @@ class MSE(Metrics):
             float: The mean squared error of the two numpy arrays.
 
         """
+
         mse = mean_squared_error(file1_data, file2_data)
 
         return float(mse)

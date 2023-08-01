@@ -4,7 +4,6 @@ import os
 import h5py
 import numpy as np
 from beartype import beartype
-from sklearn.metrics import mean_squared_error
 
 
 class Metrics:
@@ -198,4 +197,3 @@ if __name__ == '__main__':
     args = parser.parse_args()
     mse_instance = Metrics(args.file1, args.file2, args.file1_key, args.file2_key, args.output_text)
     call_func = mse_instance.calc()
-
