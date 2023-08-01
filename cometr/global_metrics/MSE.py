@@ -17,10 +17,16 @@ class MSE(Metrics):
         calculates the MSE, and stores the result in a specified text file.
 
         """
-    def __init__(self, file1, file2, file1_key='/entry/data/data', file2_key='/entry/data/data', output_text='output.txt'):
+    def __init__(
+            self,
+            file1,
+            file2,
+            file1_key='/entry/data/data',
+            file2_key='/entry/data/data',
+            output_text='output.txt'
+    ):
         super().__init__(file1, file2, file1_key, file2_key, output_text)
-        self.file1_data = None
-        self.file2_data = None
+        # self.file1_data, self.file2_data = self.load_files(file1, file2, file1_key, file2_key)
 
     def metric_calc(self, file1_data, file2_data):
         """Calculates the mean squared error of the two numpy arrays and saves the result to the specified text file.
@@ -29,15 +35,7 @@ class MSE(Metrics):
             float: The mean squared error of the two numpy arrays.
 
         """
-        # file1_arr, file2_arr = load_files(file1, file2)
-
-        # reshape the both data arrays
-        # file1_arr_reshaped = np.reshape(file1_arr, (file1_arr.shape[0], -1))
-        # file2_arr_reshaped = np.reshape(file2_arr, (file2_arr.shape[0], -1))
-
-        # calculate the mse between both files
-        mse = mean_squared_error(self.file1_data, self.file2_data)
-        np.savetxt(self.output_text, [mse], fmt='%s', delimiter='', newline='')
+        mse = mean_squared_error(file1_data, file2_data)
 
         return float(mse)
 
@@ -51,5 +49,7 @@ if __name__ == '__main__':
     parser.add_argument("-f3", '--output_text', default='output.txt', help='File to store result')
     args = parser.parse_args()
     call_func = MSE(args.file1, args.file2, args.file1_key, args.file2_key, args.output_text).calc()
+    print(call_func)
+
 
 

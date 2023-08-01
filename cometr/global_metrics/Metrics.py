@@ -133,8 +133,8 @@ class Metrics:
         if test_key not in list_of_keys:
             raise NameError(f"{test_key} is not a valid key in the {filename} file")
 
-    @staticmethod
-    def metric_calc(file1_data, file2_data):
+    # @staticmethod
+    def metric_calc(self, file1_data, file2_data):
         pass
 
     @staticmethod
@@ -173,27 +173,15 @@ class Metrics:
         file2_.close()
         return file_1_data, file_2_data
 
-    # @beartype
-    def calc(self):
+    @beartype
+    def calc(self) -> float:
         """Calculates the mean squared error of the two numpy arrays and saves the result to the specified text file.
 
         Returns:
             float: The mean squared error of the two numpy arrays.
 
         """
-        # read_file1 = h5py.File(self.file1, 'r')
-        # read_file2 = h5py.File(self.file2, 'r')
-        #
-        # file_1_data = read_file1[self.file1_key][:]
-        # file_2_data = read_file2[self.file2_key][:]
-        #
-        # # Close both files
-        # read_file1.close()
-        # read_file2.close()
 
-        # # Display shape of the file data for both files
-        # if file_1_data.shape != file_2_data.shape:
-        #     raise ValueError('Dimensions do not match')
         file_1_data, file_2_data = Metrics.load_files(self.file1, self.file2)
 
         # Display shape of the file data for both files
@@ -203,13 +191,14 @@ class Metrics:
         # reshape the both data arrays
         file1_arr_reshaped = np.reshape(file_1_data, (file_1_data.shape[0], -1))
         file2_arr_reshaped = np.reshape(file_2_data, (file_2_data.shape[0], -1))
-        #
-        # file1_name = os.path.basename(self.file1)
-        # file2_name = os.path.basename(self.file2)
-        # print(f'The shape of the {file1_name} file is {file_1_data.shape}')
-        # print(f'The shape of the {file2_name} file is {file_2_data.shape}')
 
-        result = Metrics.metric_calc(file1_arr_reshaped, file2_arr_reshaped)
+        file1_name = os.path.basename(self.file1)
+        file2_name = os.path.basename(self.file2)
+        print(f'The shape of the {file1_name} file is {file_1_data.shape}')
+        print(f'The shape of the {file2_name} file is {file_2_data.shape}')
+
+        result = self.metric_calc(file1_arr_reshaped, file2_arr_reshaped)
+        np.savetxt(self.output_text, [result], fmt='%s', delimiter='', newline='')
         return result
 
 
@@ -224,3 +213,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
     mse_instance = Metrics(args.file1, args.file2, args.file1_key, args.file2_key, args.output_text)
     call_func = mse_instance.calc()
+
