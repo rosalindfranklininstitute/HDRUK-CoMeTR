@@ -6,8 +6,6 @@ import h5py
 import numpy as np
 from beartype import beartype
 
-
-# from .Metrics import Metrics
 from torch import tensor
 from torchmetrics.regression import MeanSquaredError
 
@@ -47,13 +45,18 @@ class MSE:
         # super().__init__(file1, file2, file1_key, file2_key, output_text)
 
         self.file1 = file1
+        self.file1_key = file1_key
+
         self.file2 = file2
+        self.file2_key = file2_key
+
+        self.output_text = output_text
 
         # Open the HDF5 files for reading
         self.read_file1 = h5py.File(self.file1, "r")
         self.read_file2 = h5py.File(self.file2, "r")
 
-    def metric_calc():
+    def metric_calc(self):
         file_1_data = self.read_file1[self.file1_key][:]
         file_2_data = self.read_file2[self.file2_key][:]
 
@@ -94,9 +97,6 @@ class MSE:
         np.savetxt(self.output_text, [final_result], fmt="%s", delimiter="", newline="")
 
         return final_result
-
-    # def calc(self):
-    #     super().__init__()
 
 
 if __name__ == "__main__":
