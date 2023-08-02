@@ -83,8 +83,8 @@ class MSETest(unittest.TestCase):
             )
 
     # Check that the calc_mse's results are consistent
-    @staticmethod
-    def test_MSE_result() -> None:
+
+    def test_MSE_result(self) -> None:
         """Test the consistency of the calc_mse() results."""
 
         metric = MSE(
