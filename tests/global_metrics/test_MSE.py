@@ -1,6 +1,5 @@
 import unittest
 from os.path import dirname, abspath
-
 from cometr.global_metrics.MSE import MSE
 from cometr.global_metrics.Metric import Metric
 
