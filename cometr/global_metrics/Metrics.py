@@ -6,6 +6,7 @@ import numpy as np
 from beartype import beartype
 import torch
 
+
 class Metrics:
     """Calculates the Mean Squared Error (MSE) between two HDF5 files containing voxel data.
 
@@ -48,6 +49,11 @@ class Metrics:
         Metrics.is_key_valid(file2, file2_key)
         self.file2 = file2
         self.file2_key = file2_key
+
+        data1, data2 = self.load_files()
+        # Display shape of the file data for both files
+        if data1.shape != data2.shape:
+            raise ValueError('Dimensions do not match')
 
         Metrics.is_txt(output_text)
         self.output_text = output_text
@@ -180,24 +186,14 @@ class Metrics:
         # load voxel data arrays of both files
         file_1_data, file_2_data = self.load_files()
 
-        # Display shape of the file data for both files
-        if file_1_data.shape != file_2_data.shape:
-            raise ValueError('Dimensions do not match')
         # convert arrays into tensors
         file_1_data = torch.Tensor(file_1_data)
         file_2_data = torch.Tensor(file_2_data)
 
-        # reshape the both tensors
-        file1_arr_reshaped = file_1_data.view(file_1_data.shape[0], -1)
-        file2_arr_reshaped = file_2_data.view(file_2_data.shape[0], -1)
-
-        file1_name = os.path.basename(self.file1)
-        file2_name = os.path.basename(self.file2)
-        print(f'The shape of the {file1_name} file is {file_1_data.shape}')
-        print(f'The shape of the {file2_name} file is {file_2_data.shape}')
-
-        result = self.metric_calc(file1_arr_reshaped, file2_arr_reshaped)
-        np.savetxt(self.output_text, [result], fmt='%s', delimiter='', newline='')
+        result = self.metric_calc(file_1_data, file_2_data)
+        output = np.empty([1, ], dtype=float)
+        output[0] = result
+        np.savetxt(self.output_text, X=output, fmt='%f', delimiter='', newline='')
         return result
 
 
