@@ -56,7 +56,17 @@ class MSE:
         self.read_file1 = h5py.File(self.file1, "r")
         self.read_file2 = h5py.File(self.file2, "r")
 
+    @beartype()
     def metric_calc(self):
+        """Calculates the mean squared error of the two numpy arrays and saves the result.
+
+        This method reads data from two specified files.The data is then converted into PyTorch tensors.
+        If there exists a CUDA-enabled GPU, the computation takes place on the GPU for enhanced performance.
+        
+        Returns:
+            float: The mean squared error of the two numpy arrays.
+        
+        """
         file_1_data = self.read_file1[self.file1_key][:]
         file_2_data = self.read_file2[self.file2_key][:]
 
