@@ -1,10 +1,15 @@
 import argparse
 import os
+import torch
 
 import h5py
 import numpy as np
 from beartype import beartype
-from sklearn.metrics import mean_squared_error
+
+
+# from .Metrics import Metrics
+from torch import tensor
+from torchmetrics.regression import MeanSquaredError
 
 
 class MSE:
@@ -39,142 +44,59 @@ class MSE:
             output_text (str, optional): Path to the file to store the result. Defaults to 'output.txt'.
 
         """
-        MSE.check_file_exists(file1)
-        MSE.is_h5py_file(file1)
-        MSE.is_key_valid(file1, file1_key)
+        # super().__init__(file1, file2, file1_key, file2_key, output_text)
+
         self.file1 = file1
-        self.file1_key = file1_key
-
-        MSE.check_file_exists(file2)
-        MSE.is_h5py_file(file2)
-        MSE.is_key_valid(file2, file2_key)
         self.file2 = file2
-        self.file2_key = file2_key
 
-        MSE.is_txt(output_text)
-        self.output_text = output_text
+        # Open the HDF5 files for reading
+        self.read_file1 = h5py.File(self.file1, "r")
+        self.read_file2 = h5py.File(self.file2, "r")
 
-    @staticmethod
-    @beartype
-    def check_file_exists(inp: str) -> None:
-        """Check if the file exists.
+    def metric_calc():
+        file_1_data = self.read_file1[self.file1_key][:]
+        file_2_data = self.read_file2[self.file2_key][:]
 
-        Args:
-            inp (str): The file path to check.
-
-        Raises:
-            FileNotFoundError: If the file does not exist.
-
-        """
-        if not os.path.exists(inp):
-            raise FileNotFoundError(f"{inp} file cannot be found")
-
-    @staticmethod
-    @beartype
-    def is_h5py_file(inp: str) -> None:
-        """Check if the file is a valid HDF5 file.
-
-        Args:
-            inp (str): The file path to check.
-
-        Raises:
-            TypeError: If the file is not a valid HDF5 file.
-            NameError: If the file does not have a .h5 extension.
-
-        """
-        if not h5py.is_hdf5(inp):
-            raise TypeError(f"{inp} is not a HDF5 file.")
-
-        if inp[-3:] != ".h5":
-            raise NameError(f"{inp} does not have a .h5 extension")
-
-    @staticmethod
-    @beartype
-    def is_txt(inp: str) -> None:
-        """Check if the output file has a .txt extension.
-
-        Args:
-            inp (str): The file path to check.
-
-        Raises:
-            NameError: If the output file does not have a .txt extension.
-
-        """
-        if inp[-4:] != ".txt":
-            raise NameError(f"{inp} does not have a .txt extension")
-
-    @staticmethod
-    @beartype
-    def is_key_valid(filename: str, test_key: str) -> None:
-        """Test if the given key exists in the input .h5 filename.
-
-        Args:
-            filename (str): Input filename of the .h5 file.
-            test_key (str): Key to be tested, if it is included in the .h5 file.
-
-        Raises:
-            NameError: If the key is not a valid key in the .h5 file.
-
-        """
-
-        def all_keys(obj):
-            """Returns a list of all the keys in the object, recursively."""
-            keys = (obj.name,)
-            if isinstance(obj, h5py.Group):
-                for key, value in obj.items():
-                    if isinstance(value, h5py.Group):
-                        keys = keys + all_keys(value)
-                    else:
-                        keys = keys + (value.name,)
-            return keys
-
-        f = h5py.File(filename, "r")
-        list_of_keys = all_keys(f)
-        f.close()
-        if test_key not in list_of_keys:
-            raise NameError(f"{test_key} is not a valid key in the {filename} file")
-
-    @beartype
-    def calc_mse(self) -> float:
-        """Calculates the mean squared error of the two numpy arrays and saves the result to the specified text file.
-
-        Returns:
-            float: The mean squared error of the two numpy arrays.
-
-        """
-        read_file1 = h5py.File(self.file1, "r")
-        read_file2 = h5py.File(self.file2, "r")
-
-        file_1_data = read_file1[self.file1_key][:]
-        file_2_data = read_file2[self.file2_key][:]
-
-        # Display shape of the file data for both files
-        if file_1_data.shape != file_2_data.shape:
-            raise ValueError("Dimensions do not match")
+        # Close both files
+        self.read_file1.close()
+        self.read_file2.close()
 
         file1_name = os.path.basename(self.file1)
         file2_name = os.path.basename(self.file2)
         print(f"The shape of the {file1_name} file is {file_1_data.shape}")
         print(f"The shape of the {file2_name} file is {file_2_data.shape}")
 
-        # Convert data from 3D to 2D numpy arrays to use MSE metric
-        file1_2d = np.reshape(file_1_data, (file_1_data.shape[0], -1))
-        file2_2d = np.reshape(file_2_data, (file_2_data.shape[0], -1))
+        # Convert data to tensors
+        file1_tensor = torch.from_numpy(file_1_data)
+        file2_tensor = torch.from_numpy(file_2_data)
 
-        # Calculate the mean squared error
-        mse = mean_squared_error(file1_2d, file2_2d)
+        if torch.cuda.is_available():
+            file1_tensor = file1_tensor.cuda()
+            file2_tensor = file2_tensor.cuda()
+
+            # Calculate the mean squared error
+            mse = MeanSquaredError().cuda()
+            result = mse(file1_tensor, file2_tensor)
+
+            # convert result to float
+            final_result = result.cpu().detach().item()
+
+        else:
+            mse = MeanSquaredError()
+            result = mse(file1_tensor, file2_tensor)
+            final_result = result.detach().item()
+
         print(
             f"The Mean Squared Error between the {file1_name} and {file2_name} is:\n",
-            mse,
+            final_result,
         )
 
-        # Close both files
-        read_file1.close()
-        read_file2.close()
+        np.savetxt(self.output_text, [final_result], fmt="%s", delimiter="", newline="")
 
-        np.savetxt(self.output_text, [mse], fmt="%s", delimiter="", newline="")
+        return final_result
 
-        return float(mse)
+    # def calc(self):
+    #     super().__init__()
 
 
 if __name__ == "__main__":
@@ -202,4 +124,4 @@ if __name__ == "__main__":
     mse_instance = MSE(
         args.file1, args.file2, args.filekey1, args.filekey2, args.output_text
     )
-    call_func = mse_instance.calc_mse()
+    call_func = mse_instance.metric_calc()
