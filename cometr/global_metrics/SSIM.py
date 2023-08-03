@@ -90,11 +90,11 @@ class SSIM:
         data_range = torch.max(file1_tensor_5d) - torch.min(file1_tensor_5d)
 
         if torch.cuda.is_available():
-            file1_tensor = file1_tensor_5d.cuda()
-            file2_tensor = file2_tensor_5d.cuda()
+            file1_tensor_5d = file1_tensor_5d.cuda()
+            file2_tensor_5d = file2_tensor_5d.cuda()
 
             ssim = StructuralSimilarityIndexMeasure(data_range=data_range).cuda()
-            result = ssim(file1_tensor_5d, file2_tensor_5d)
+            result = ssim(file1_tensor_5d, file2_tensor_5d).cuda()
 
             # convert result to float
             final_result = result.cpu().detach().item()
