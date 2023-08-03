@@ -7,15 +7,15 @@ import numpy as np
 from beartype import beartype
 
 from torch import tensor
-from torchmetrics.regression import MeanSquaredError
+from torchmetrics.image import StructuralSimilarityIndexMeasure
 
 
-class MSE:
-    """Calculates the Mean Squared Error (MSE) between two HDF5 files containing voxel data.
+class SSIM:
+    """Calculates the Structural Similarity Index (SSIM) between two HDF5 files containing voxel data.
 
-    This class provides a convenient way to calculate the MSE between voxel data
+    This class provides a convenient way to calculate the SSIM between voxel data
     stored in two HDF5 files. It reads the data from both files, checks for validity,
-    calculates the MSE, and stores the result in a specified text file.
+    calculates the SSIM, and stores the result in a specified text file.
 
     """
 
@@ -28,7 +28,7 @@ class MSE:
         file2_key: str = "/entry/data/data",
         output_text: str = "output.txt",
     ) -> None:
-        """Initializes the `MSE` class.
+        """Initializes the `SSIM` class.
 
         Args:
             file1 (str): Path to the first HDF5 file.
@@ -82,24 +82,30 @@ class MSE:
         file1_tensor = torch.from_numpy(file_1_data)
         file2_tensor = torch.from_numpy(file_2_data)
 
-        if torch.cuda.is_available():
-            file1_tensor = file1_tensor.cuda()
-            file2_tensor = file2_tensor.cuda()
+        # convert data to a 5D tensor
+        file1_tensor_5d = torch.unsqueeze(torch.unsqueeze(file1_tensor, 0), 0)
+        file2_tensor_5d = torch.unsqueeze(torch.unsqueeze(file2_tensor, 0), 0)
 
-            # Calculate the mean squared error
-            mse = MeanSquaredError().cuda()
-            result = mse(file1_tensor, file2_tensor)
+        # calculate the data range
+        data_range = torch.max(file1_tensor_5d) - torch.min(file1_tensor_5d)
+
+        if torch.cuda.is_available():
+            file1_tensor = file1_tensor_5d.cuda()
+            file2_tensor = file2_tensor_5d.cuda()
+
+            ssim = StructuralSimilarityIndexMeasure(data_range=data_range).cuda()
+            result = ssim(file1_tensor_5d, file2_tensor_5d)
 
             # convert result to float
             final_result = result.cpu().detach().item()
 
         else:
-            mse = MeanSquaredError()
-            result = mse(file1_tensor, file2_tensor)
+            ssim = StructuralSimilarityIndexMeasure(data_range=data_range)
+            result = ssim(file1_tensor_5d, file2_tensor_5d)
             final_result = result.detach().item()
 
         print(
-            f"The Mean Squared Error between the {file1_name} and {file2_name} is:\n",
+            f"The Structural Similarity Index between the {file1_name} and {file2_name} is:\n",
             final_result,
         )
 
@@ -110,7 +116,7 @@ class MSE:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Calculate the MSE of two numpy arrays"
+        description="Calculate the SSIM of two numpy arrays"
     )
     parser.add_argument("-f1", "--file1", required=True, help="Path to the first file")
     parser.add_argument("-f2", "--file2", required=True, help="Path to the second file")
@@ -130,7 +136,7 @@ if __name__ == "__main__":
         "-f3", "--output_text", default="output.txt", help="File to store result"
     )
     args = parser.parse_args()
-    mse_instance = MSE(
+    ssim_instance = SSIM(
         args.file1, args.file2, args.filekey1, args.filekey2, args.output_text
     )
-    call_func = mse_instance.calc()
+    call_func = ssim_instance.calc()

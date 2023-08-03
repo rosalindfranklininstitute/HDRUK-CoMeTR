@@ -66,7 +66,7 @@ class MSETest(unittest.TestCase):
                 "/data",
                 dirname(abspath(__file__)) + "/../data/output.txt",
             )
-            metric.metric_calc()
+            metric.calc()
 
     # Check error if dimensions of the data do not match
     def test_dim_error(self) -> None:
@@ -80,7 +80,7 @@ class MSETest(unittest.TestCase):
                 "/entry/data/data",
                 dirname(abspath(__file__)) + "/../data/output.txt",
             )
-            metric.metric_calc()
+            metric.calc()
 
     # Check that the calc_mse's results are consistent
 
@@ -94,7 +94,7 @@ class MSETest(unittest.TestCase):
             "/entry/data/data",
             dirname(abspath(__file__)) + "/../data/output.txt",
         )
-        metric.metric_calc()
+        metric.calc()
 
 
 if __name__ == "__main__":
