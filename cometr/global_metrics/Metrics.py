@@ -4,7 +4,6 @@ import os
 import h5py
 import numpy as np
 from beartype import beartype
-import torch
 
 
 class Metrics:
@@ -15,6 +14,7 @@ class Metrics:
     calculates the MSE, and stores the result in a specified text file.
 
     """
+
     @beartype
     def __init__(
             self,
@@ -51,7 +51,8 @@ class Metrics:
         self.file2_key = file2_key
 
         data1, data2 = self.load_files()
-        # Display shape of the file data for both files
+
+        # check if both files are of the same dimension
         if data1.shape != data2.shape:
             raise ValueError('Dimensions do not match')
 
@@ -138,7 +139,6 @@ class Metrics:
         if test_key not in list_of_keys:
             raise NameError(f"{test_key} is not a valid key in the {filename} file")
 
-    # @staticmethod
     @beartype
     def load_files(self) -> tuple[np.ndarray, np.ndarray]:
         """Load data from two HDF5 files and return the corresponding numpy arrays.
@@ -152,16 +152,16 @@ class Metrics:
         file2_ = h5py.File(self.file2, "r")
 
         # Get data location from both files
-        file_1_data = file1_[self.file1_key][:]
-        file_2_data = file2_[self.file2_key][:]
+        data1 = file1_[self.file1_key][:]
+        data2 = file2_[self.file2_key][:]
 
         # close both files
         file1_.close()
         file2_.close()
-        return file_1_data, file_2_data
+        return data1, data2
 
     @beartype
-    def metric_calc(self, file1_data: torch.Tensor, file2_data: torch.Tensor) -> None:
+    def metric_calc(self, file1_data: np.ndarray, file2_data: np.ndarray) -> None:
         """Calculates the loss metrics of the two numpy arrays.
 
         Args:
@@ -184,22 +184,27 @@ class Metrics:
 
         """
         # load voxel data arrays of both files
-        file_1_data, file_2_data = self.load_files()
+        file1_data, file2_data = self.load_files()
 
-        # convert arrays into tensors
-        file_1_data = torch.Tensor(file_1_data)
-        file_2_data = torch.Tensor(file_2_data)
+        # reshape the both data arrays
+        reshaped_data1 = np.reshape(file1_data, (file1_data.shape[0], -1))
+        reshaped_data2 = np.reshape(file2_data, (file2_data.shape[0], -1))
 
-        result = self.metric_calc(file_1_data, file_2_data)
+        # calculate the mean squared error
+        result = self.metric_calc(reshaped_data1, reshaped_data2)
+
+        # insert the result in an array
         output = np.empty([1, ], dtype=float)
         output[0] = result
+
+        # save result in a text file
         np.savetxt(self.output_text, X=output, fmt='%f', delimiter='', newline='')
+
         return result
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Calculate the MSE of two numpy arrays')
-
     parser.add_argument("-f1", '--file1', required=True, help='Path to the first file')
     parser.add_argument("-f2", '--file2', required=True, help='Path to the second file')
     parser.add_argument("-k1", '--file1_key', default='/entry/data/data', help='Key to data in the first file')
