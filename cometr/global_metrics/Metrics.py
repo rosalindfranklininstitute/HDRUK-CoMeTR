@@ -24,7 +24,7 @@ class Metrics:
             file2_key: str = '/entry/data/data',
             output_text: str = 'output.txt'
     ) -> None:
-        """Initializes the `MSE` class.
+        """Initializes the Metrics class.
 
         Args:
             file1 (str): Path to the first HDF5 file.
@@ -186,12 +186,8 @@ class Metrics:
         # load voxel data arrays of both files
         file1_data, file2_data = self.load_files()
 
-        # reshape the both data arrays
-        reshaped_data1 = np.reshape(file1_data, (file1_data.shape[0], -1))
-        reshaped_data2 = np.reshape(file2_data, (file2_data.shape[0], -1))
-
         # calculate the mean squared error
-        result = self.metric_calc(reshaped_data1, reshaped_data2)
+        result = self.metric_calc(file1_data, file2_data)
 
         # insert the result in an array
         output = np.empty([1, ], dtype=float)
@@ -203,7 +199,7 @@ class Metrics:
         return result
 
 
-if __name__ == '__main__':
+def main() -> None:
     parser = argparse.ArgumentParser(description='Calculate the MSE of two numpy arrays')
     parser.add_argument("-f1", '--file1', required=True, help='Path to the first file')
     parser.add_argument("-f2", '--file2', required=True, help='Path to the second file')
@@ -211,5 +207,8 @@ if __name__ == '__main__':
     parser.add_argument("-k2", '--file2_key', default='/entry/data/data', help='Key to data in the second file')
     parser.add_argument("-f3", '--output_text', default='output.txt', help='File to store result')
     args = parser.parse_args()
-    mse_instance = Metrics(args.file1, args.file2, args.file1_key, args.file2_key, args.output_text)
-    call_func = mse_instance.calc()
+    call_func = Metrics(args.file1, args.file2, args.file1_key, args.file2_key, args.output_text).calc()
+
+
+if __name__ == '__main__':
+    main()

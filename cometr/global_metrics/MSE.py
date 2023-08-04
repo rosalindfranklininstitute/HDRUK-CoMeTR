@@ -34,12 +34,15 @@ class MSE(Metrics):
             float: The mean squared error of the two numpy arrays.
 
         """
-        mse = mean_squared_error(file1_data, file2_data)
+        # reshape the both data arrays
+        reshaped_data1 = np.reshape(file1_data, (file1_data.shape[0], -1))
+        reshaped_data2 = np.reshape(file2_data, (file2_data.shape[0], -1))
+        mse = mean_squared_error(reshaped_data1, reshaped_data2)
 
         return float(mse)
 
 
-if __name__ == '__main__':
+def main() -> None:
     parser = argparse.ArgumentParser(description='Calculate the MSE of two numpy arrays')
     parser.add_argument("-f1", '--file1', required=True, help='Path to the first file')
     parser.add_argument("-f2", '--file2', required=True, help='Path to the second file')
@@ -48,3 +51,7 @@ if __name__ == '__main__':
     parser.add_argument("-f3", '--output_text', default='output.txt', help='File to store result')
     args = parser.parse_args()
     call_func = MSE(args.file1, args.file2, args.file1_key, args.file2_key, args.output_text).calc()
+
+
+if __name__ == '__main__':
+    main()
