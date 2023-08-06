@@ -11,6 +11,7 @@ from torchmetrics.regression import MeanSquaredError
 
 
 class MSE:
+
     """Calculates the Mean Squared Error (MSE) between two HDF5 files containing voxel data.
 
     This class provides a convenient way to calculate the MSE between voxel data
@@ -45,15 +46,98 @@ class MSE:
 
         self.file1 = file1
         self.file1_key = file1_key
+        MSE.check_file_exists(self.file1)
+        MSE.is_h5py_file(self.file1)
+        MSE.is_key_valid(self.file1, self.file1_key)
 
         self.file2 = file2
         self.file2_key = file2_key
+        MSE.check_file_exists(self.file2)
+        MSE.is_h5py_file(self.file2)
+        MSE.is_key_valid(self.file2, self.file2_key)
 
         self.output_text = output_text
+        MSE.is_txt(output_text)
 
-        # Open the HDF5 files for reading
-        self.read_file1 = h5py.File(self.file1, "r")
-        self.read_file2 = h5py.File(self.file2, "r")
+    @staticmethod
+    @beartype
+    def check_file_exists(inp: str) -> None:
+        """Check if the file exists.
+
+        Args:
+            inp (str): The file path to check.
+
+        Raises:
+            FileNotFoundError: If the file does not exist.
+
+        """
+        if not os.path.exists(inp):
+            raise FileNotFoundError(f"{inp} file cannot be found")
+
+    @staticmethod
+    @beartype
+    def is_h5py_file(inp: str) -> None:
+        """Check if the file is a valid HDF5 file.
+
+        Args:
+            inp (str): The file path to check.
+
+        Raises:
+            TypeError: If the file is not a valid HDF5 file.
+            NameError: If the file does not have a .h5 extension.
+
+        """
+        if not h5py.is_hdf5(inp):
+            raise TypeError(f"{inp} is not a HDF5 file.")
+
+        if inp[-3:] != ".h5":
+            raise NameError(f"{inp} does not have a .h5 extension")
+
+    @staticmethod
+    @beartype
+    def is_txt(inp: str) -> None:
+        """Check if the output file has a .txt extension.
+
+        Args:
+            inp (str): The file path to check.
+
+        Raises:
+            NameError: If the output file does not have a .txt extension.
+
+        """
+        if inp[-4:] != ".txt":
+            raise NameError(f"{inp} does not have a .txt extension")
+
+    @staticmethod
+    @beartype
+    def is_key_valid(filename: str, test_key: str) -> None:
+        """Test if the given key exists in the input .h5 filename.
+
+        Args:
+            filename (str): Input filename of the .h5 file.
+            test_key (str): Key to be tested, if it is included in the .h5 file.
+
+        Raises:
+            NameError: If the key is not a valid key in the .h5 file.
+
+        """
+
+        def all_keys(obj):
+            """Returns a list of all the keys in the object, recursively."""
+            keys = (obj.name,)
+            if isinstance(obj, h5py.Group):
+                for key, value in obj.items():
+                    if isinstance(value, h5py.Group):
+                        keys = keys + all_keys(value)
+                    else:
+                        keys = keys + (value.name,)
+            return keys
+
+        f = h5py.File(filename, "r")
+        list_of_keys = all_keys(f)
+        f.close()
+        if test_key not in list_of_keys:
+            raise NameError(f"{test_key} is not a valid key in the {filename} file")
 
     @beartype
     def calc(self) -> float:
@@ -66,12 +150,17 @@ class MSE:
             float: The mean squared error of the two numpy arrays.
 
         """
-        file_1_data = self.read_file1[self.file1_key][:]
-        file_2_data = self.read_file2[self.file2_key][:]
+
+        # Open the HDF5 files for reading
+        read_file1 = h5py.File(self.file1, "r")
+        read_file2 = h5py.File(self.file2, "r")
+
+        file_1_data = read_file1[self.file1_key][:]
+        file_2_data = read_file2[self.file2_key][:]
 
         # Close both files
-        self.read_file1.close()
-        self.read_file2.close()
+        read_file1.close()
+        read_file2.close()
 
         file1_name = os.path.basename(self.file1)
         file2_name = os.path.basename(self.file2)
