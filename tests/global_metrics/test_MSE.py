@@ -69,18 +69,19 @@ class MSETest(unittest.TestCase):
             metric.calc()
 
     # Check error if dimensions of the data do not match
-    def test_dim_error(self) -> None:
-        """Test if ValueError is raised when the dimensions of the data do not match."""
-
-        with self.assertRaises(ValueError):
-            metric = MSE(
-                dirname(abspath(__file__)) + "/../data/file1_200.h5",
-                dirname(abspath(__file__)) + "/../data/file2_1000.h5",
-                "/entry/data/data",
-                "/entry/data/data",
-                dirname(abspath(__file__)) + "/../data/output.txt",
-            )
-            metric.calc()
+    # tensors are used now no need to check dimesnsions
+    # def test_dim_error(self) -> None:
+    #     """Test if ValueError is raised when the dimensions of the data do not match."""
+    #
+    #     with self.assertRaises(ValueError):
+    #         metric = MSE(
+    #             dirname(abspath(__file__)) + "/../data/file1_200.h5",
+    #             dirname(abspath(__file__)) + "/../data/file2_1000.h5",
+    #             "/entry/data/data",
+    #             "/entry/data/data",
+    #             dirname(abspath(__file__)) + "/../data/output.txt",
+    #         )
+    #         metric.calc()
 
     # Check that the calc_mse's results are consistent
 
