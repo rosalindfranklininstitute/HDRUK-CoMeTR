@@ -197,7 +197,7 @@ class MSE:
         return final_result
 
 
-if __name__ == "__main__":
+def main() -> None:
     parser = argparse.ArgumentParser(
         description="Calculate the MSE of two numpy arrays"
     )
@@ -223,3 +223,7 @@ if __name__ == "__main__":
         args.file1, args.file2, args.filekey1, args.filekey2, args.output_text
     )
     call_func = mse_instance.calc()
+
+
+if __name__ == "__main__":
+    main()
