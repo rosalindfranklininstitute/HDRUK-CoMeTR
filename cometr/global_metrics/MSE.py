@@ -1,23 +1,26 @@
 import argparse
+import torch
+import os
 
 import numpy as np
 from beartype import beartype
-from sklearn.metrics import mean_squared_error
 
-from cometr.global_metrics.Metrics import Metrics
+from torch import tensor
+from torchmetrics.regression import MeanSquaredError
+
+from cometr.global_metrics.Metric import Metric
 
 
-class MSE(Metrics):
-    """Calculates the Mean Squared Error (MSE) between two HDF5 files containing voxel data.
-    """
+class MSE(Metric):
+    """Calculates the Mean Squared Error (MSE) between two HDF5 files containing voxel data."""
 
     def __init__(
-            self,
-            file1,
-            file2,
-            file1_key='/entry/data/data',
-            file2_key='/entry/data/data',
-            output_text='output.txt'
+        self,
+        file1,
+        file2,
+        file1_key="/entry/data/data",
+        file2_key="/entry/data/data",
+        output_text="output.txt",
     ):
         super().__init__(file1, file2, file1_key, file2_key, output_text)
 
@@ -34,24 +37,66 @@ class MSE(Metrics):
             float: The mean squared error of the two numpy arrays.
 
         """
-        # reshape the both data arrays
-        reshaped_data1 = np.reshape(file1_data, (file1_data.shape[0], -1))
-        reshaped_data2 = np.reshape(file2_data, (file2_data.shape[0], -1))
-        mse = mean_squared_error(reshaped_data1, reshaped_data2)
+        # Extract names of the  files
+        file1_name = os.path.basename(self.file1)
+        file2_name = os.path.basename(self.file2)
 
-        return float(mse)
+        # Convert data to tensors
+        file1_tensor = torch.from_numpy(file1_data)
+        file2_tensor = torch.from_numpy(file2_data)
+
+        if torch.cuda.is_available():
+            file1_tensor = file1_tensor.cuda()
+            file2_tensor = file2_tensor.cuda()
+
+            # Calculate the mean squared error
+            mse = MeanSquaredError().cuda()
+            result = mse(file1_tensor, file2_tensor)
+
+            # convert result to float
+            final_result = result.cpu().detach().item()
+
+        else:
+            mse = MeanSquaredError()
+            result = mse(file1_tensor, file2_tensor)
+            final_result = result.detach().item()
+
+        print(
+            f"The Mean Squared Error between the {file1_name} and {file2_name} is:\n",
+            final_result,
+        )
+
+        np.savetxt(self.output_text, [final_result], fmt="%s", delimiter="", newline="")
+
+        return final_result
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description='Calculate the MSE of two numpy arrays')
-    parser.add_argument("-f1", '--file1', required=True, help='Path to the first file')
-    parser.add_argument("-f2", '--file2', required=True, help='Path to the second file')
-    parser.add_argument("-k1", '--file1_key', default='/entry/data/data', help='Key to data in the first file')
-    parser.add_argument("-k2", '--file2_key', default='/entry/data/data', help='Key to data in the second file')
-    parser.add_argument("-f3", '--output_text', default='output.txt', help='File to store result')
+    parser = argparse.ArgumentParser(
+        description="Calculate the MSE of two numpy arrays"
+    )
+    parser.add_argument("-f1", "--file1", required=True, help="Path to the first file")
+    parser.add_argument("-f2", "--file2", required=True, help="Path to the second file")
+    parser.add_argument(
+        "-k1",
+        "--file1_key",
+        default="/entry/data/data",
+        help="Key to data in the first file",
+    )
+    parser.add_argument(
+        "-k2",
+        "--file2_key",
+        default="/entry/data/data",
+        help="Key to data in the second file",
+    )
+    parser.add_argument(
+        "-f3", "--output_text", default="output.txt", help="File to store result"
+    )
     args = parser.parse_args()
-    call_func = MSE(args.file1, args.file2, args.file1_key, args.file2_key, args.output_text).calc()
+    call_func = MSE(
+        args.file1, args.file2, args.file1_key, args.file2_key, args.output_text
+    ).calc()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

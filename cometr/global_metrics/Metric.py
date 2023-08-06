@@ -6,7 +6,7 @@ import numpy as np
 from beartype import beartype
 
 
-class Metrics:
+class Metric:
     """Calculates the Mean Squared Error (MSE) between two HDF5 files containing voxel data.
 
     This class provides a convenient way to calculate the MSE between voxel data
@@ -17,12 +17,12 @@ class Metrics:
 
     @beartype
     def __init__(
-            self,
-            file1: str,
-            file2: str,
-            file1_key: str = '/entry/data/data',
-            file2_key: str = '/entry/data/data',
-            output_text: str = 'output.txt'
+        self,
+        file1: str,
+        file2: str,
+        file1_key: str = "/entry/data/data",
+        file2_key: str = "/entry/data/data",
+        output_text: str = "output.txt",
     ) -> None:
         """Initializes the Metrics class.
 
@@ -38,15 +38,15 @@ class Metrics:
             output_text (str, optional): Path to the file to store the result. Defaults to 'output.txt'.
 
         """
-        Metrics.check_file_exists(file1)
-        Metrics.is_h5py_file(file1)
-        Metrics.is_key_valid(file1, file1_key)
+        Metric.check_file_exists(file1)
+        Metric.is_h5py_file(file1)
+        Metric.is_key_valid(file1, file1_key)
         self.file1 = file1
         self.file1_key = file1_key
 
-        Metrics.check_file_exists(file2)
-        Metrics.is_h5py_file(file2)
-        Metrics.is_key_valid(file2, file2_key)
+        Metric.check_file_exists(file2)
+        Metric.is_h5py_file(file2)
+        Metric.is_key_valid(file2, file2_key)
         self.file2 = file2
         self.file2_key = file2_key
 
@@ -54,9 +54,9 @@ class Metrics:
 
         # check if both files are of the same dimension
         if data1.shape != data2.shape:
-            raise ValueError('Dimensions do not match')
+            raise ValueError("Dimensions do not match")
 
-        Metrics.is_txt(output_text)
+        Metric.is_txt(output_text)
         self.output_text = output_text
 
     @staticmethod
@@ -90,7 +90,7 @@ class Metrics:
         if not h5py.is_hdf5(inp):
             raise TypeError(f"{inp} is not a HDF5 file.")
 
-        if inp[-3:] != '.h5':
+        if inp[-3:] != ".h5":
             raise NameError(f"{inp} does not have a .h5 extension")
 
     @staticmethod
@@ -105,7 +105,7 @@ class Metrics:
             NameError: If the output file does not have a .txt extension.
 
         """
-        if inp[-4:] != '.txt':
+        if inp[-4:] != ".txt":
             raise NameError(f"{inp} does not have a .txt extension")
 
     @staticmethod
@@ -190,25 +190,46 @@ class Metrics:
         result = self.metric_calc(file1_data, file2_data)
 
         # insert the result in an array
-        output = np.empty([1, ], dtype=float)
+        output = np.empty(
+            [
+                1,
+            ],
+            dtype=float,
+        )
         output[0] = result
 
         # save result in a text file
-        np.savetxt(self.output_text, X=output, fmt='%f', delimiter='', newline='')
+        np.savetxt(self.output_text, X=output, fmt="%f", delimiter="", newline="")
 
         return result
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description='Calculate the MSE of two numpy arrays')
-    parser.add_argument("-f1", '--file1', required=True, help='Path to the first file')
-    parser.add_argument("-f2", '--file2', required=True, help='Path to the second file')
-    parser.add_argument("-k1", '--file1_key', default='/entry/data/data', help='Key to data in the first file')
-    parser.add_argument("-k2", '--file2_key', default='/entry/data/data', help='Key to data in the second file')
-    parser.add_argument("-f3", '--output_text', default='output.txt', help='File to store result')
+    parser = argparse.ArgumentParser(
+        description="Calculate the MSE of two numpy arrays"
+    )
+    parser.add_argument("-f1", "--file1", required=True, help="Path to the first file")
+    parser.add_argument("-f2", "--file2", required=True, help="Path to the second file")
+    parser.add_argument(
+        "-k1",
+        "--file1_key",
+        default="/entry/data/data",
+        help="Key to data in the first file",
+    )
+    parser.add_argument(
+        "-k2",
+        "--file2_key",
+        default="/entry/data/data",
+        help="Key to data in the second file",
+    )
+    parser.add_argument(
+        "-f3", "--output_text", default="output.txt", help="File to store result"
+    )
     args = parser.parse_args()
-    call_func = Metrics(args.file1, args.file2, args.file1_key, args.file2_key, args.output_text).calc()
+    call_func = Metric(
+        args.file1, args.file2, args.file1_key, args.file2_key, args.output_text
+    ).calc()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
