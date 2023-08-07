@@ -69,6 +69,10 @@ class SSIM:
         file_1_data = self.read_file1[self.file1_key][:]
         file_2_data = self.read_file2[self.file2_key][:]
 
+        # check shape of the data are equal
+        if file_1_data.shape != file_2_data.shape:
+            raise ValueError("Dimensions do not match")
+
         # Close both files
         self.read_file1.close()
         self.read_file2.close()
@@ -89,20 +93,9 @@ class SSIM:
         # calculate the data range
         data_range = torch.max(file1_tensor_5d) - torch.min(file1_tensor_5d)
 
-        if torch.cuda.is_available():
-            file1_tensor_5d = file1_tensor_5d.cuda()
-            file2_tensor_5d = file2_tensor_5d.cuda()
-
-            ssim = StructuralSimilarityIndexMeasure(data_range=data_range).cuda()
-            result = ssim(file1_tensor_5d, file2_tensor_5d).cuda()
-
-            # convert result to float
-            final_result = result.cpu().detach().item()
-
-        else:
-            ssim = StructuralSimilarityIndexMeasure(data_range=data_range)
-            result = ssim(file1_tensor_5d, file2_tensor_5d)
-            final_result = result.detach().item()
+        ssim = StructuralSimilarityIndexMeasure(data_range=data_range)
+        result = ssim(file1_tensor_5d, file2_tensor_5d)
+        final_result = result.detach().item()
 
         print(
             f"The Structural Similarity Index between the {file1_name} and {file2_name} is:\n",

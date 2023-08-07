@@ -157,6 +157,11 @@ class MSE:
 
         file_1_data = read_file1[self.file1_key][:]
         file_2_data = read_file2[self.file2_key][:]
+        #
+
+        # check shape of the data are equal
+        if file_1_data.shape != file_2_data.shape:
+            raise ValueError("Dimensions do not match")
 
         # Close both files
         read_file1.close()
