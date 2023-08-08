@@ -62,7 +62,7 @@ class SSIM:
             float: The mean squared error of the two numpy arrays.
 
         """
-
+        # open the files
         # Open the HDF5 files for reading
         read_file1 = h5py.File(self.file1, "r")
         read_file2 = h5py.File(self.file2, "r")
