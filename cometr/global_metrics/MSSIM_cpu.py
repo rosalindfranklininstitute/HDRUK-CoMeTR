@@ -7,7 +7,7 @@ import numpy as np
 from beartype import beartype
 
 from torch import tensor
-from torchmetrics.image import StructuralSimilarityIndexMeasure
+from pytorch_msssim import ssim
 
 
 class SSIM:
@@ -95,8 +95,7 @@ class SSIM:
         # calculate the data range
         data_range = torch.max(file1_tensor_5d) - torch.min(file1_tensor_5d)
 
-        ssim = StructuralSimilarityIndexMeasure(data_range=data_range)
-        result = ssim(file1_tensor_5d, file2_tensor_5d)
+        result = ssim(file1_tensor_5d, file2_tensor_5d, data_range=data_range)
         final_result = result.detach().item()
 
         print(
