@@ -5,7 +5,6 @@ import os
 import numpy as np
 from beartype import beartype
 
-from torch import tensor
 from torchmetrics.regression import MeanSquaredError
 
 from cometr.global_metrics.Metric import Metric
@@ -23,6 +22,7 @@ class MSE(Metric):
         output_text="output.txt",
     ):
         super().__init__(file1, file2, file1_key, file2_key, output_text)
+        self.output_text = 'mse_result.txt'
 
     @beartype
     def metric_calc(self, file1_data: np.ndarray, file2_data: np.ndarray) -> float:
@@ -61,12 +61,7 @@ class MSE(Metric):
             result = mse(file1_tensor, file2_tensor)
             final_result = result.detach().item()
 
-        print(
-            f"The Mean Squared Error between the {file1_name} and {file2_name} is:\n",
-            final_result,
-        )
-
-        np.savetxt(self.output_text, [final_result], fmt="%s", delimiter="", newline="")
+        print(f"The Mean Squared Error between the {file1_name} and {file2_name} is:")
 
         return final_result
 
@@ -93,7 +88,7 @@ def main() -> None:
         "-f3", "--output_text", default="output.txt", help="File to store result"
     )
     args = parser.parse_args()
-    call_func = MSE(
+    MSE(
         args.file1, args.file2, args.file1_key, args.file2_key, args.output_text
     ).calc()
 
