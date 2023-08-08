@@ -51,10 +51,6 @@ class SSIM:
 
         self.output_text = output_text
 
-        # Open the HDF5 files for reading
-        self.read_file1 = h5py.File(self.file1, "r")
-        self.read_file2 = h5py.File(self.file2, "r")
-
     @beartype
     def calc(self) -> float:
         """Calculates the mean squared error of the two numpy arrays and saves the result.
@@ -66,16 +62,22 @@ class SSIM:
             float: The mean squared error of the two numpy arrays.
 
         """
-        file_1_data = self.read_file1[self.file1_key][:]
-        file_2_data = self.read_file2[self.file2_key][:]
+
+        # Open the HDF5 files for reading
+        read_file1 = h5py.File(self.file1, "r")
+        read_file2 = h5py.File(self.file2, "r")
+
+        # load the files
+        file_1_data = read_file1[self.file1_key][:]
+        file_2_data = read_file2[self.file2_key][:]
 
         # check shape of the data are equal
         if file_1_data.shape != file_2_data.shape:
             raise ValueError("Dimensions do not match")
 
         # Close both files
-        self.read_file1.close()
-        self.read_file2.close()
+        read_file1.close()
+        read_file2.close()
 
         file1_name = os.path.basename(self.file1)
         file2_name = os.path.basename(self.file2)
