@@ -183,6 +183,7 @@ class Metric:
             float: The mean squared error of the two numpy arrays.
 
         """
+
         # load voxel data arrays of both files
         file1_data, file2_data = self.load_files()
 
@@ -190,16 +191,12 @@ class Metric:
         result = self.metric_calc(file1_data, file2_data)
 
         # insert the result in an array
-        output = np.empty(
-            [
-                1,
-            ],
-            dtype=float,
-        )
+        output = np.empty([1], dtype=float)
         output[0] = result
 
         # save result in a text file
         np.savetxt(self.output_text, X=output, fmt="%f", delimiter="", newline="")
+        print(result)
 
         return result
 
