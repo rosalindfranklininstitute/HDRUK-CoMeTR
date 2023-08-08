@@ -81,8 +81,6 @@ class SSIM:
 
         file1_name = os.path.basename(self.file1)
         file2_name = os.path.basename(self.file2)
-        print(f"The shape of the {file1_name} file is {file_1_data.shape}")
-        print(f"The shape of the {file2_name} file is {file_2_data.shape}")
 
         # Convert data to tensors
         file1_tensor = torch.from_numpy(file_1_data)
@@ -91,6 +89,9 @@ class SSIM:
         # convert data to a 5D tensor
         file1_tensor_5d = torch.unsqueeze(torch.unsqueeze(file1_tensor, 0), 0)
         file2_tensor_5d = torch.unsqueeze(torch.unsqueeze(file2_tensor, 0), 0)
+
+        print(f"The shape of the {file1_name} file is {file1_tensor_5d.shape}")
+        print(f"The shape of the {file2_name} file is {file2_tensor_5d.shape}")
 
         # calculate the data range
         data_range = torch.max(file1_tensor_5d) - torch.min(file1_tensor_5d)
