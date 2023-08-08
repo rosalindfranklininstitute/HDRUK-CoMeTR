@@ -1,8 +1,11 @@
+import numpy as np
 import unittest
 from os.path import dirname, abspath
 
 from cometr.global_metrics.MSE import MSE
 from cometr.global_metrics.Metric import Metric
+from cometr.global_metrics.MAE import MAE
+from cometr.global_metrics.PSNR import PSNR
 
 
 class MSETest(unittest.TestCase):
@@ -83,10 +86,8 @@ class MSETest(unittest.TestCase):
             )
 
     # Check that the calc_mse's results are consistent
-    @staticmethod
-    def test_MSE_result() -> None:
+    def test_MSE_result(self) -> None:
         """Test the consistency of the calc_mse() results."""
-
         metric = MSE(
             dirname(abspath(__file__)) + '/../data/file1_200.h5',
             dirname(abspath(__file__)) + '/../data/file2_200.h5',
@@ -94,7 +95,32 @@ class MSETest(unittest.TestCase):
             '/entry/data/data',
             dirname(abspath(__file__)) + '/../data/output.txt'
         )
-        metric.calc()
+        data1, data2 = metric.load_files()
+        self.assertNotAlmostEqual(metric.metric_calc(data1, data2), np.random.normal(), places=6)
+
+    def test_MAE_result(self) -> None:
+        """Test the consistency of the calc_mse() results."""
+        metric = MAE(
+            dirname(abspath(__file__)) + '/../data/file1_200.h5',
+            dirname(abspath(__file__)) + '/../data/file2_200.h5',
+            '/entry/data/data',
+            '/entry/data/data',
+            dirname(abspath(__file__)) + '/../data/output.txt'
+        )
+        data1, data2 = metric.load_files()
+        self.assertNotAlmostEqual(metric.metric_calc(data1, data2), np.random.normal(), places=6)
+
+    def test_PSNR_result(self) -> None:
+        """Test the consistency of the calc_mse() results."""
+        metric = PSNR(
+            dirname(abspath(__file__)) + '/../data/file1_200.h5',
+            dirname(abspath(__file__)) + '/../data/file2_200.h5',
+            '/entry/data/data',
+            '/entry/data/data',
+            dirname(abspath(__file__)) + '/../data/output.txt'
+        )
+        data1, data2 = metric.load_files()
+        self.assertNotAlmostEqual(metric.metric_calc(data1, data2), np.random.normal(), places=6)
 
 
 if __name__ == '__main__':
