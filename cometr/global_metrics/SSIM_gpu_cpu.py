@@ -106,6 +106,9 @@ class SSIM:
             ).cuda()
             final_result = result.cpu().detach().item()
 
+            # Clear GPU memory
+            torch.cuda.empty_cache()
+
         else:
             result = ssim(file1_tensor_5d, file2_tensor_5d, data_range=data_range)
             final_result = result.detach().item()
