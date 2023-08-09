@@ -94,8 +94,11 @@ class SSIM:
         print(f"The shape of the {file2_name} file is {file2_tensor_5d.shape}")
 
         # reshape data to enable gpu parallelisation
-        file1_tensor_5d_ = file1_tensor_5d.reshape(8, 1, 500, 500, 500)
-        file2_tensor_5d_ = file2_tensor_5d.reshape(8, 1, 500, 500, 500)
+        # file1_tensor_5d_ = file1_tensor_5d.reshape(8, 1, 500, 500, 500)
+        # file2_tensor_5d_ = file2_tensor_5d.reshape(8, 1, 500, 500, 500)
+
+        file1_tensor_5d_ = file1_tensor_5d.reshape(8, 500, 500, 500, 1)
+        file2_tensor_5d_ = file2_tensor_5d.reshape(8, 500, 500, 500, 1)
 
         print("Tensor 1 shape after reshaping the data ", file1_tensor_5d_.shape)
         print("Tensor 2 shape after reshaping the data ", file2_tensor_5d_.shape)
