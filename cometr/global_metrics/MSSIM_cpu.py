@@ -93,6 +93,41 @@ class SSIM:
         print(f"The shape of the {file1_name} file is {file1_tensor_5d.shape}")
         print(f"The shape of the {file2_name} file is {file2_tensor_5d.shape}")
 
+        # reshape data to enable gpu parallelisation
+        file1_tensor_5d_ = file1_tensor_5d.reshape(8, 1, 500, 500, 500)
+        file2_tensor_5d_ = file2_tensor_5d.reshape(8, 1, 500, 500, 500)
+
+        print("Tensor 1 shape after reshaping the data ", file1_tensor_5d_.shape)
+        print("Tensor 2 shape after reshaping the data ", file2_tensor_5d_.shape)
+
+        ssim_results = []
+
+        for i in range(file1_tensor_5d_.shape[0]):
+            data_range = torch.max(file1_tensor_5d_[i : i + 1, :, :, :, :]) - torch.min(
+                file1_tensor_5d_[i : i + 1, :, :, :, :]
+            )
+            result = ssim(
+                file1_tensor_5d_[i : i + 1, :, :, :, :],
+                file2_tensor_5d_[i : i + 1, :, :, :, :],
+                data_range=data_range,
+            )
+            ssim_results.append(result)
+
+        print("SSIM results:", ssim_results)
+        ssim_results_tensor = torch.stack(ssim_results)
+        ssim_results_avg = torch.mean(ssim_results_tensor)
+        final_result_ = ssim_results_avg.detach().item()
+
+        print(
+            f"The Structural Similarity Index (after splitting  the data) between the {file1_name} and {file2_name} is:\n",
+            final_result_,
+        )
+
+        np.savetxt(
+            self.output_text, [final_result_], fmt="%s", delimiter="", newline=""
+        )
+
+        # calculating SSIM without splitting
         # calculate the data range
         data_range = torch.max(file1_tensor_5d) - torch.min(file1_tensor_5d)
 
@@ -100,13 +135,13 @@ class SSIM:
         final_result = result.detach().item()
 
         print(
-            f"The Structural Similarity Index between the {file1_name} and {file2_name} is:\n",
+            f"The Structural Similarity Index (without data splitting) between the {file1_name} and {file2_name} is:\n",
             final_result,
         )
 
         np.savetxt(self.output_text, [final_result], fmt="%s", delimiter="", newline="")
 
-        return final_result
+        return final_result_
 
 
 def main():
