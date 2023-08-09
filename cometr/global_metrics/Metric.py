@@ -1,6 +1,6 @@
 import argparse
 import os
-from os.path import dirname, basename
+
 import h5py
 import numpy as np
 from beartype import beartype
@@ -38,13 +38,19 @@ class Metric:
             output_text (str, optional): Path to the file to store the result. Defaults to 'output.txt'.
 
         """
-        data1 = Metric.load_file(file1, file1_key)
+        Metric.check_file_exists(file1)
+        Metric.is_h5py_file(file1)
+        Metric.is_key_valid(file1, file1_key)
         self.file1 = file1
         self.file1_key = file1_key
 
-        data2 = Metric.load_file(file2, file2_key)
+        Metric.check_file_exists(file2)
+        Metric.is_h5py_file(file2)
+        Metric.is_key_valid(file2, file2_key)
         self.file2 = file2
         self.file2_key = file2_key
+
+        data1, data2 = self.load_files()
 
         # check if both files are of the same dimension
         if data1.shape != data2.shape:
@@ -78,7 +84,6 @@ class Metric:
 
         Raises:
             TypeError: If the file is not a valid HDF5 file.
-
             NameError: If the file does not have a .h5 extension.
 
         """
@@ -110,7 +115,6 @@ class Metric:
 
         Args:
             filename (str): Input filename of the .h5 file.
-
             test_key (str): Key to be tested, if it is included in the .h5 file.
 
         Raises:
@@ -135,73 +139,26 @@ class Metric:
         if test_key not in list_of_keys:
             raise NameError(f"{test_key} is not a valid key in the {filename} file")
 
-    @staticmethod
     @beartype
-    def load_file(filename: str, file_key: str) -> np.ndarray:
+    def load_files(self) -> tuple[np.ndarray, np.ndarray]:
         """Load data from two HDF5 files and return the corresponding numpy arrays.
 
-        Args:
-            filename (string): The input .h5 file filename
-
-            file_key (string): Key to the voxel data in the file
-
         Returns:
-            file_data (np.ndarray): A numpy array with the .h5 file data.
+            file1_arr and file2_arr (Tuple[np.ndarray, np.ndarray]): A tuple containing two numpy arrays.
 
         """
-        Metric.check_file_exists(filename)
-        Metric.is_h5py_file(filename)
-        Metric.is_key_valid(filename, file_key)
+        # Load both h5 files
+        file1_ = h5py.File(self.file1, "r")
+        file2_ = h5py.File(self.file2, "r")
 
-        # Load h5 file
-        file = h5py.File(filename, "r")
+        # Get data location from both files
+        data1 = file1_[self.file1_key][:]
+        data2 = file2_[self.file2_key][:]
 
-        # Get data location from file
-        data = file[file_key][:]
-
-        # close file
-        file.close()
-        return data
-
-    @staticmethod
-    @beartype
-    def store_file(
-        data: np.ndarray, filename: str, file_key: str, overwrite: bool = False
-    ) -> None:
-        """Store data to a HDF5 file.
-
-        Args:
-            data (np.ndarray): The data to be stored in the output .h5 file
-
-            filename (string): The output .h5 file filename
-
-            file_key (string): Key to the voxel data in the file
-
-            overwrite (bool): If true an existing file will be overwritten
-
-        """
-        if os.path.exists(filename) and overwrite is False:
-            raise FileExistsError(
-                f"This {filename} file already exists and cannot be overwritten"
-            )
-
-        # Load h5 file
-        file = h5py.File(filename, "w")
-
-        # Store data location from file
-        lst = file_key.split("/")
-        lst = [i for i in lst if i]
-
-        grp = file
-        for i in range(0, len(lst) - 1):
-            grp = grp.create_group(lst[i])
-
-        dataset = grp.create_dataset(lst[-1], data.shape, chunks=True)
-        dataset[:] = data[:]
-
-        # close file
-        file.close()
-        return
+        # close both files
+        file1_.close()
+        file2_.close()
+        return data1, data2
 
     @beartype
     def metric_calc(self, file1_data: np.ndarray, file2_data: np.ndarray) -> None:
@@ -220,18 +177,17 @@ class Metric:
 
     @beartype
     def calc(self) -> float:
-        """Gets the mean squared error of the two numpy arrays and saves the result to the specified text file.
+        """Gets the error of the two numpy arrays and saves the result to the specified text file.
 
         Returns:
-            float: The mean squared error of the two numpy arrays.
+            float: The error of the two numpy arrays.
 
         """
 
         # load voxel data arrays of both files
-        file1_data = Metric.load_file(self.file1, self.file1_key)
-        file2_data = Metric.load_file(self.file2, self.file2_key)
+        file1_data, file2_data = self.load_files()
 
-        # calculate the metric
+        # calculate the error
         result = self.metric_calc(file1_data, file2_data)
 
         # insert the result in an array
@@ -247,7 +203,7 @@ class Metric:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Calculate the MSE of two numpy arrays"
+        description="Calculate the loss error of two numpy arrays"
     )
     parser.add_argument("-f1", "--file1", required=True, help="Path to the first file")
     parser.add_argument("-f2", "--file2", required=True, help="Path to the second file")
@@ -267,7 +223,7 @@ def main() -> None:
         "-f3", "--output_text", default="output.txt", help="File to store result"
     )
     args = parser.parse_args()
-    call_func = Metric(
+    Metric(
         args.file1, args.file2, args.file1_key, args.file2_key, args.output_text
     ).calc()
 
