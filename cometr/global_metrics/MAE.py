@@ -1,17 +1,18 @@
 import argparse
-import torch
 import os
 
 import numpy as np
+import torch
 from beartype import beartype
-
 from torchmetrics.regression import MeanAbsoluteError
 
 from cometr.global_metrics.Metric import Metric
 
 
 class MAE(Metric):
-    """Calculates the Mean Absolute Error (MAE) between two HDF5 files containing voxel data."""
+    """Calculates the Mean Absolute Error (MAE) between two HDF5 files containing voxel data.
+
+    """
 
     def __init__(
         self,

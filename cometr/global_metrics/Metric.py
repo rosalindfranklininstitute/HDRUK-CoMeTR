@@ -177,17 +177,17 @@ class Metric:
 
     @beartype
     def calc(self) -> float:
-        """Gets the mean squared error of the two numpy arrays and saves the result to the specified text file.
+        """Gets the error of the two numpy arrays and saves the result to the specified text file.
 
         Returns:
-            float: The mean squared error of the two numpy arrays.
+            float: The error of the two numpy arrays.
 
         """
 
         # load voxel data arrays of both files
         file1_data, file2_data = self.load_files()
 
-        # calculate the mean squared error
+        # calculate the error
         result = self.metric_calc(file1_data, file2_data)
 
         # insert the result in an array
@@ -203,7 +203,7 @@ class Metric:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Calculate the MSE of two numpy arrays"
+        description="Calculate the loss error of two numpy arrays"
     )
     parser.add_argument("-f1", "--file1", required=True, help="Path to the first file")
     parser.add_argument("-f2", "--file2", required=True, help="Path to the second file")
@@ -223,7 +223,7 @@ def main() -> None:
         "-f3", "--output_text", default="output.txt", help="File to store result"
     )
     args = parser.parse_args()
-    call_func = Metric(
+    Metric(
         args.file1, args.file2, args.file1_key, args.file2_key, args.output_text
     ).calc()
 
