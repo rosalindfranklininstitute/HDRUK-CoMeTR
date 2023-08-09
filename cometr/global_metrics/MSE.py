@@ -11,7 +11,9 @@ from cometr.global_metrics.Metric import Metric
 
 
 class MSE(Metric):
-    """Calculates the Mean Squared Error (MSE) between two HDF5 files containing voxel data."""
+    """Calculates the Mean Squared Error (MSE) between two HDF5 files containing voxel data.
+
+    """
 
     def __init__(
         self,
