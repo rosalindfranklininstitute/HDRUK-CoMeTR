@@ -1,17 +1,18 @@
 import argparse
-import torch
 import os
 
 import numpy as np
+import torch
 from beartype import beartype
-
 from torchmetrics.image import PeakSignalNoiseRatio
 
 from cometr.global_metrics.Metric import Metric
 
 
 class PSNR(Metric):
-    """Calculates the Peak Signal-To-Noise Ratio (PSNR) between two HDF5 files containing voxel data."""
+    """Calculates the Peak Signal-To-Noise Ratio (PSNR) between two HDF5 files containing voxel data.
+
+    """
 
     def __init__(
         self,
@@ -34,7 +35,7 @@ class PSNR(Metric):
             file2_data (np.ndarray): The numpy array containing voxel data from the second file.
 
         Returns:
-            float: The mean squared error of the two numpy arrays.
+            float: The Peak Signal-To-Noise Ratio (PSNR) of the two numpy arrays.
 
         """
         # Extract names of the  files
