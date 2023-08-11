@@ -5,7 +5,7 @@ import os
 import numpy as np
 from beartype import beartype
 
-from torch import tensor
+from torch import Tensor
 from torchmetrics.regression import MeanSquaredError
 
 from cometr.global_metrics.Metric import Metric
@@ -14,14 +14,15 @@ from cometr.global_metrics.Metric import Metric
 class MSE(Metric):
     """Calculates the Mean Squared Error (MSE) between two HDF5 files containing voxel data."""
 
+    @beartype
     def __init__(
         self,
-        file1,
-        file2,
-        file1_key="/entry/data/data",
-        file2_key="/entry/data/data",
-        output_text="output.txt",
-    ):
+        file1: str,
+        file2: str,
+        file1_key: str = "/entry/data/data",
+        file2_key: str = "/entry/data/data",
+        output_text: str = "output.txt",
+    ) -> None:
         super().__init__(file1, file2, file1_key, file2_key, output_text)
 
     @beartype
