@@ -47,25 +47,19 @@ class MSE(Metric):
         file1_tensor = torch.from_numpy(file1_data)
         file2_tensor = torch.from_numpy(file2_data)
 
-        if torch.cuda.is_available():
-            file1_tensor = file1_tensor.cuda()
-            file2_tensor = file2_tensor.cuda()
+        # gpu utilization if cuda is available
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        file1_tensor = file1_tensor.to(device)
+        file2_tensor = file2_tensor.to(device)
 
-            # Calculate the mean squared error
-            mse = MeanSquaredError().cuda()
-            result = mse(file1_tensor, file2_tensor)
+        # Calculate the mean absolute error
+        mse = MeanSquaredError().to(device)
+        result = mse(file1_tensor, file2_tensor)
+        final_result = result.cpu().detach().item()
 
-            # convert result to float
-            final_result = result.cpu().detach().item()
+        print(f"The Mean Squared Error between {file1_name} and {file2_name} is:")
 
-        else:
-            mse = MeanSquaredError()
-            result = mse(file1_tensor, file2_tensor)
-            final_result = result.detach().item()
-
-        print(f"The Mean Squared Error between the {file1_name} and {file2_name} is:")
-
-        return final_result
+        return round(final_result, 7)
 
 
 def main() -> None:

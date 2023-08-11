@@ -59,7 +59,7 @@ class PSNR(Metric):
 
         print(f"The Peak Signal-to-Noise Ratio between the {file1_name} and {file2_name} is:")
 
-        return final_result
+        return round(final_result, 7)
 
 
 def main() -> None:

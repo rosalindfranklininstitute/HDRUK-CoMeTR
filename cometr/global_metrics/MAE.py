@@ -5,6 +5,7 @@ import numpy as np
 import torch
 from beartype import beartype
 from torchmetrics.regression import MeanAbsoluteError
+from sklearn.metrics import mean_absolute_error
 
 from cometr.global_metrics.Metric import Metric
 
@@ -59,7 +60,7 @@ class MAE(Metric):
 
         print(f"The Mean Absolute Error between the {file1_name} and {file2_name} is:")
 
-        return final_result
+        return round(final_result, 7)
 
 
 def main() -> None:
