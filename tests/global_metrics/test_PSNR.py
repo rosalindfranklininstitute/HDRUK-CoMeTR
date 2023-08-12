@@ -4,7 +4,7 @@ from os.path import dirname, abspath
 from cometr.global_metrics.PSNR import PSNR
 
 # load in peak signal-to-noise ratio result to verify metric calculation
-with open(dirname(abspath(__file__)) + '/../data/psnr_test_result', 'r') as f:
+with open(dirname(abspath(__file__)) + '/../data/psnr_test_result.txt', 'r') as f:
     psnr_result = float(f.read())
 
 
@@ -87,9 +87,7 @@ class PSNRTest(unittest.TestCase):
 
     # Check that the type of the result is a float
     def test_result_type(self) -> None:
-        """Test that the data type of the peak signal-to-noise ratio result is a float.
-
-        """
+        """Test that the data type of the peak signal-to-noise ratio result is a float."""
         metric = PSNR(
             dirname(abspath(__file__)) + '/../data/file1_200.h5',
             dirname(abspath(__file__)) + '/../data/file2_200.h5',
