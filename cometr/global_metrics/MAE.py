@@ -49,7 +49,7 @@ class MAE(Metric):
             file1_tensor = file1_tensor.cuda()
             file2_tensor = file2_tensor.cuda()
 
-            # Calculate the mean absolute error
+            # Calculate the mean absolute error on GPU
             mae = MeanAbsoluteError().cuda()
             result = mae(file1_tensor, file2_tensor)
 
@@ -57,6 +57,7 @@ class MAE(Metric):
             final_result = result.cpu().detach().item()
 
         else:
+            # Calculate the mean absolute error on CPU
             mae = MeanAbsoluteError()
             result = mae(file1_tensor, file2_tensor)
             final_result = result.detach().item()
