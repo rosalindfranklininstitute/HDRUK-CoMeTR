@@ -10,29 +10,28 @@ from cometr.global_metrics.Metric import Metric
 
 
 class PSNR(Metric):
-    """Calculates the Peak Signal-To-Noise Ratio (PSNR) between two HDF5 files containing voxel data.
+    """Calculates the Peak Signal-To-Noise Ratio (PSNR) between two HDF5 files containing voxel data."""
 
-    """
-
+    @beartype
     def __init__(
         self,
-        file1,
-        file2,
-        file1_key="/entry/data/data",
-        file2_key="/entry/data/data",
-        output_text="output.txt",
+        predicted: str,
+        target: str,
+        predicted_key: str = "/entry/data/data",
+        target_key: str = "/entry/data/data",
+        output_text: str = "output.txt",
     ):
-        super().__init__(file1, file2, file1_key, file2_key, output_text)
+        super().__init__(predicted, target, predicted_key, target_key, output_text)
         self.output_text = 'psnr_result.txt'
 
     @beartype
-    def metric_calc(self, file1_data: np.ndarray, file2_data: np.ndarray) -> float:
+    def metric_calc(self, predicted_data: np.ndarray, target_data: np.ndarray) -> float:
         """Calculates the Peak Signal-To-Noise Ratio (PSNR)  of the two numpy arrays.
 
         Args:
-            file1_data (np.ndarray): The numpy array containing voxel data from the first file.
+            predicted_data (np.ndarray): The numpy array containing the predicted voxel data.
 
-            file2_data (np.ndarray): The numpy array containing voxel data from the second file.
+            target_data (np.ndarray): The numpy array containing the groundtruth voxel data.
 
         Returns:
             float: The Peak Signal-To-Noise Ratio (PSNR) of the two numpy arrays.
@@ -43,23 +42,28 @@ class PSNR(Metric):
         file2_name = os.path.basename(self.file2)
 
         # Convert data to tensors
-        file1_tensor = torch.from_numpy(file1_data)
-        file2_tensor = torch.from_numpy(file2_data)
+        predicted_tensor = torch.from_numpy(predicted_data)
+        target_tensor = torch.from_numpy(target_data)
 
-        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        file1_tensor = file1_tensor.to(device)
-        file2_tensor = file2_tensor.to(device)
+        if torch.cuda.is_available():
+            predicted_tensor = predicted_tensor.cuda()
+            target_tensor = target_tensor.cuda()
 
-        # Calculate the peak signal-to-noise ratio
-        mae = PeakSignalNoiseRatio().to(device)
-        result = mae(file1_tensor, file2_tensor)
+            # Calculate the peak signal-to-noise ratio
+            psnr = PeakSignalNoiseRatio(data_range=torch.max(target_tensor) - torch.min(target_tensor)).cuda()
+            result = psnr(predicted_tensor, target_tensor)
 
-        # convert result to float
-        final_result = result.cpu().detach().item()
+            # convert result to float
+            final_result = result.cpu().detach().item()
+
+        else:
+            psnr = PeakSignalNoiseRatio(data_range=torch.max(target_tensor) - torch.min(target_tensor))
+            result = psnr(predicted_tensor, target_tensor)
+            final_result = result.detach().item()
 
         print(f"The Peak Signal-to-Noise Ratio between the {file1_name} and {file2_name} is:")
 
-        return round(final_result, 7)
+        return round(final_result, 6)
 
 
 def main() -> None:
