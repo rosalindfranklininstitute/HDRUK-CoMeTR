@@ -5,7 +5,7 @@ from cometr.global_metrics.MAE import MAE
 
 
 # load in mean absolute error result to verify metric calculation
-with open(dirname(abspath(__file__)) + '/../data/mae_test_result', 'r') as f:
+with open(dirname(abspath(__file__)) + '/../data/mae_test_result.txt', 'r') as f:
     mae_result = float(f.read())
 
 
@@ -101,7 +101,7 @@ class MAETest(unittest.TestCase):
         data1, data2 = metric.load_files()
         self.assertEqual(type(metric.metric_calc(data1, data2)), float)
 
-    # check consistency of the result
+    # check consistency of the MAE result
     def test_result_consistency(self) -> None:
         """Test consistency of the mean absolute error result."""
         metric = MAE(
