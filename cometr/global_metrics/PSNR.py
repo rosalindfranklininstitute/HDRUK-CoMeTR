@@ -49,7 +49,7 @@ class PSNR(Metric):
             predicted_tensor = predicted_tensor.cuda()
             target_tensor = target_tensor.cuda()
 
-            # Calculate the peak signal-to-noise ratio
+            # Calculate the peak signal-to-noise ratio on GPU
             psnr = PeakSignalNoiseRatio(data_range=torch.max(target_tensor) - torch.min(target_tensor)).cuda()
             result = psnr(predicted_tensor, target_tensor)
 
@@ -57,6 +57,7 @@ class PSNR(Metric):
             final_result = result.cpu().detach().item()
 
         else:
+            # Calculate the peak signal-to-noise ratio on CPU
             psnr = PeakSignalNoiseRatio(data_range=torch.max(target_tensor) - torch.min(target_tensor))
             result = psnr(predicted_tensor, target_tensor)
             final_result = result.detach().item()
