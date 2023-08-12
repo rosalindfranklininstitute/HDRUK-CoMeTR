@@ -5,26 +5,25 @@ import os
 import numpy as np
 from beartype import beartype
 
+from torch import Tensor
 from torchmetrics.regression import MeanSquaredError
 
 from cometr.global_metrics.Metric import Metric
 
 
 class MSE(Metric):
-    """Calculates the Mean Squared Error (MSE) between two HDF5 files containing voxel data.
+    """Calculates the Mean Squared Error (MSE) between two HDF5 files containing voxel data."""
 
-    """
-
+    @beartype
     def __init__(
         self,
-        file1,
-        file2,
-        file1_key="/entry/data/data",
-        file2_key="/entry/data/data",
-        output_text="output.txt",
-    ):
+        file1: str,
+        file2: str,
+        file1_key: str = "/entry/data/data",
+        file2_key: str = "/entry/data/data",
+        output_text: str = "output.txt",
+    ) -> None:
         super().__init__(file1, file2, file1_key, file2_key, output_text)
-        self.output_text = 'mse_result.txt'
 
     @beartype
     def metric_calc(self, file1_data: np.ndarray, file2_data: np.ndarray) -> float:
@@ -47,19 +46,30 @@ class MSE(Metric):
         file1_tensor = torch.from_numpy(file1_data)
         file2_tensor = torch.from_numpy(file2_data)
 
-        # gpu utilization if cuda is available
-        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        file1_tensor = file1_tensor.to(device)
-        file2_tensor = file2_tensor.to(device)
+        if torch.cuda.is_available():
+            file1_tensor = file1_tensor.cuda()
+            file2_tensor = file2_tensor.cuda()
 
-        # Calculate the mean absolute error
-        mse = MeanSquaredError().to(device)
-        result = mse(file1_tensor, file2_tensor)
-        final_result = result.cpu().detach().item()
+            # Calculate the mean squared error
+            mse = MeanSquaredError().cuda()
+            result = mse(file1_tensor, file2_tensor)
 
-        print(f"The Mean Squared Error between {file1_name} and {file2_name} is:")
+            # convert result to float
+            final_result = result.cpu().detach().item()
 
-        return round(final_result, 7)
+        else:
+            mse = MeanSquaredError()
+            result = mse(file1_tensor, file2_tensor)
+            final_result = result.detach().item()
+
+        print(
+            f"The Mean Squared Error between the {file1_name} and {file2_name} is:\n",
+            final_result,
+        )
+
+        np.savetxt(self.output_text, [final_result], fmt="%s", delimiter="", newline="")
+
+        return final_result
 
 
 def main() -> None:
@@ -84,7 +94,7 @@ def main() -> None:
         "-f3", "--output_text", default="output.txt", help="File to store result"
     )
     args = parser.parse_args()
-    MSE(
+    call_func = MSE(
         args.file1, args.file2, args.file1_key, args.file2_key, args.output_text
     ).calc()
 

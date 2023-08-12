@@ -5,24 +5,22 @@ import numpy as np
 import torch
 from beartype import beartype
 from torchmetrics.regression import MeanAbsoluteError
-from sklearn.metrics import mean_absolute_error
 
 from cometr.global_metrics.Metric import Metric
 
 
 class MAE(Metric):
-    """Calculates the Mean Absolute Error (MAE) between two HDF5 files containing voxel data.
+    """Calculates the Mean Absolute Error (MAE) between two HDF5 files containing voxel data."""
 
-    """
-
+    @beartype
     def __init__(
         self,
-        file1,
-        file2,
-        file1_key="/entry/data/data",
-        file2_key="/entry/data/data",
-        output_text="output.txt",
-    ):
+        file1: str,
+        file2: str,
+        file1_key: str = "/entry/data/data",
+        file2_key: str = "/entry/data/data",
+        output_text: str = "output.txt",
+    ) -> None:
         super().__init__(file1, file2, file1_key, file2_key, output_text)
         self.output_text = 'mae_result.txt'
 
@@ -47,20 +45,25 @@ class MAE(Metric):
         file1_tensor = torch.from_numpy(file1_data)
         file2_tensor = torch.from_numpy(file2_data)
 
-        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        file1_tensor = file1_tensor.to(device)
-        file2_tensor = file2_tensor.to(device)
+        if torch.cuda.is_available():
+            file1_tensor = file1_tensor.cuda()
+            file2_tensor = file2_tensor.cuda()
 
-        # Calculate the mean absolute error
-        mae = MeanAbsoluteError().to(device)
-        result = mae(file1_tensor, file2_tensor)
+            # Calculate the mean absolute error
+            mae = MeanAbsoluteError().cuda()
+            result = mae(file1_tensor, file2_tensor)
 
-        # convert result to float
-        final_result = result.cpu().detach().item()
+            # convert result to float
+            final_result = result.cpu().detach().item()
+
+        else:
+            mae = MeanAbsoluteError()
+            result = mae(file1_tensor, file2_tensor)
+            final_result = result.detach().item()
 
         print(f"The Mean Absolute Error between the {file1_name} and {file2_name} is:")
 
-        return round(final_result, 7)
+        return round(final_result, 6)
 
 
 def main() -> None:
