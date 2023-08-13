@@ -413,8 +413,16 @@ class SSIM(Metric):
         A = torch.flatten(A, 2).mean(-1).mean()
 
         if self.device != "cpu":
+            print(
+                f"The Structural Similarity Index is:\n",
+                A.detach().cpu().item(),
+            )
             return A.detach().cpu().item()
         else:
+            print(
+                f"The Structural Similarity Index  is:\n",
+                A.detach().item(),
+            )
             return A.detach().item()
 
 
