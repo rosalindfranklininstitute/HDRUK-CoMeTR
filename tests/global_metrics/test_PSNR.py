@@ -85,18 +85,17 @@ class PSNRTest(unittest.TestCase):
                 dirname(abspath(__file__)) + "/../data/output.txt",
             )
 
-    # Check that the type of the result is a float
-    # def test_result_type(self) -> None:
-    #     """Test that the data type of the peak signal-to-noise ratio result is a float."""
-    #     metric = PSNR(
-    #         dirname(abspath(__file__)) + "/../data/file1_200.h5",
-    #         dirname(abspath(__file__)) + "/../data/file2_200.h5",
-    #         "/entry/data/data",
-    #         "/entry/data/data",
-    #         dirname(abspath(__file__)) + "/../data/output.txt",
-    #     )
-    #     data1, data2 = metric.load_file()
-    #     self.assertEqual(type(metric.metric_calc(data1, data2)), float)
+    # Check that the type of the result is a consistent
+    def test_result_type(self) -> None:
+        """Test that the data type of the peak signal-to-noise ratio result is a float."""
+        metric = PSNR(
+            dirname(abspath(__file__)) + "/../data/file1_200.h5",
+            dirname(abspath(__file__)) + "/../data/file2_200.h5",
+            "/entry/data/data",
+            "/entry/data/data",
+            dirname(abspath(__file__)) + "/../data/output.txt",
+        )
+
 
     # check consistency of the result
     # def test_result_consistency(self) -> None:
