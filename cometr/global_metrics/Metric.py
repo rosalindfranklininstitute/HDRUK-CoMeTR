@@ -230,7 +230,7 @@ class Metric:
         file1_data = Metric.load_file(self.file1, self.file1_key)
         file2_data = Metric.load_file(self.file2, self.file2_key)
 
-        # calculate the mean squared error
+        # calculate the metric
         result = self.metric_calc(file1_data, file2_data)
 
         # insert the result in an array
