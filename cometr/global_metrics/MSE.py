@@ -69,7 +69,7 @@ class MSE(Metric):
 
         np.savetxt(self.output_text, [final_result], fmt="%s", delimiter="", newline="")
 
-        return round(final_result, 7)
+        return final_result
 
 
 def main() -> None:
