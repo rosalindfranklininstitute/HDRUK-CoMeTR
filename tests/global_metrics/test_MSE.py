@@ -14,11 +14,11 @@ class MSETest(unittest.TestCase):
 
         with self.assertRaises(FileNotFoundError):
             Metric(
-                dirname(abspath(__file__)) + '/../data/file3_300.h5',
-                dirname(abspath(__file__)) + '/../data/file2_1000.h5',
-                '/entry/data/data',
-                '/entry/data/data',
-                dirname(abspath(__file__)) + '/../data/output.txt'
+                dirname(abspath(__file__)) + "/../data/file3_300.h5",
+                dirname(abspath(__file__)) + "/../data/file2_1000.h5",
+                "/entry/data/data",
+                "/entry/data/data",
+                dirname(abspath(__file__)) + "/../data/output.txt",
             )
 
     # Check the error if one of the files is not in h5py format
@@ -27,20 +27,20 @@ class MSETest(unittest.TestCase):
 
         with self.assertRaises(TypeError):
             Metric(
-                dirname(abspath(__file__)) + '/../data/output.txt',
-                dirname(abspath(__file__)) + '/../data/file2_1000.h5',
-                '/entry/data/data',
-                '/entry/data/data',
-                dirname(abspath(__file__)) + '/../data/output.txt'
+                dirname(abspath(__file__)) + "/../data/output.txt",
+                dirname(abspath(__file__)) + "/../data/file2_1000.h5",
+                "/entry/data/data",
+                "/entry/data/data",
+                dirname(abspath(__file__)) + "/../data/output.txt",
             )
 
         with self.assertRaises(NameError):
             Metric(
-                dirname(abspath(__file__)) + '/../data/file4_100',
-                dirname(abspath(__file__)) + '/../data/file2_1000.h5',
-                '/entry/data/data',
-                '/entry/data/data',
-                dirname(abspath(__file__)) + '/../data/output.txt'
+                dirname(abspath(__file__)) + "/../data/file4_100",
+                dirname(abspath(__file__)) + "/../data/file2_1000.h5",
+                "/entry/data/data",
+                "/entry/data/data",
+                dirname(abspath(__file__)) + "/../data/output.txt",
             )
 
     # Check the error if the output file format is not txt
@@ -49,11 +49,11 @@ class MSETest(unittest.TestCase):
 
         with self.assertRaises(NameError):
             Metric(
-                dirname(abspath(__file__)) + '/../data/file1_1000.h5',
-                dirname(abspath(__file__)) + '/../data/file2_1000.h5',
-                '/entry/data/data',
-                '/entry/data/data',
-                dirname(abspath(__file__)) + '/../data/output'
+                dirname(abspath(__file__)) + "/../data/file1_1000.h5",
+                dirname(abspath(__file__)) + "/../data/file2_1000.h5",
+                "/entry/data/data",
+                "/entry/data/data",
+                dirname(abspath(__file__)) + "/../data/output",
             )
 
     # Check the error if the data is not in the standard dictionary format
@@ -62,11 +62,11 @@ class MSETest(unittest.TestCase):
 
         with self.assertRaises(NameError):
             Metric(
-                dirname(abspath(__file__)) + '/../data/file1_1000.h5',
-                dirname(abspath(__file__)) + '/../data/file3_100.h5',
-                '/data',
-                '/data',
-                dirname(abspath(__file__)) + '/../data/output.txt'
+                dirname(abspath(__file__)) + "/../data/file1_1000.h5",
+                dirname(abspath(__file__)) + "/../data/file3_100.h5",
+                "/data",
+                "/data",
+                dirname(abspath(__file__)) + "/../data/output.txt",
             )
 
     # Check error if dimensions of the data do not match
@@ -75,11 +75,11 @@ class MSETest(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             Metric(
-                dirname(abspath(__file__)) + '/../data/file1_200.h5',
-                dirname(abspath(__file__)) + '/../data/file2_1000.h5',
-                '/entry/data/data',
-                '/entry/data/data',
-                dirname(abspath(__file__)) + '/../data/output.txt'
+                dirname(abspath(__file__)) + "/../data/file1_200.h5",
+                dirname(abspath(__file__)) + "/../data/file2_1000.h5",
+                "/entry/data/data",
+                "/entry/data/data",
+                dirname(abspath(__file__)) + "/../data/output.txt",
             )
 
     # Check that the calc_mse's results are consistent
@@ -88,14 +88,14 @@ class MSETest(unittest.TestCase):
         """Test the consistency of the calc_mse() results."""
 
         metric = MSE(
-            dirname(abspath(__file__)) + '/../data/file1_200.h5',
-            dirname(abspath(__file__)) + '/../data/file2_200.h5',
-            '/entry/data/data',
-            '/entry/data/data',
-            dirname(abspath(__file__)) + '/../data/output.txt'
+            dirname(abspath(__file__)) + "/../data/file1_200.h5",
+            dirname(abspath(__file__)) + "/../data/file2_200.h5",
+            "/entry/data/data",
+            "/entry/data/data",
+            dirname(abspath(__file__)) + "/../data/output.txt",
         )
         metric.calc()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
