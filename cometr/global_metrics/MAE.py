@@ -62,7 +62,10 @@ class MAE(Metric):
             result = mae(file1_tensor, file2_tensor)
             final_result = result.detach().item()
 
-        print(f"The Mean Absolute Error between the {file1_name} and {file2_name} is:")
+        print(f"The Mean Absolute Error between the {file1_name} and {file2_name} is:\n",
+              final_result
+        )
+
 
         return round(final_result, 6)
 

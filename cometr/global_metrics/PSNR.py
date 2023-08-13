@@ -62,7 +62,11 @@ class PSNR(Metric):
             result = psnr(predicted_tensor, target_tensor)
             final_result = result.detach().item()
 
-        print(f"The Peak Signal-to-Noise Ratio between the {file1_name} and {file2_name} is:")
+        print(
+            f"The Peak Signal-to-Noise Ratio between the {file1_name} and {file2_name} is:\n",
+            final_result,
+        )
+
 
         return round(final_result, 6)
 
