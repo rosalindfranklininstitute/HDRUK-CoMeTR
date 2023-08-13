@@ -137,10 +137,7 @@ class Metric:
 
     @staticmethod
     @beartype
-    def load_file(
-            filename: str,
-            file_key: str
-    ) -> np.ndarray:
+    def load_file(filename: str, file_key: str) -> np.ndarray:
         """Load data from two HDF5 files and return the corresponding numpy arrays.
 
         Args:
@@ -169,10 +166,7 @@ class Metric:
     @staticmethod
     @beartype
     def store_file(
-            data: np.ndarray,
-            filename: str,
-            file_key: str,
-            overwrite: bool = False
+        data: np.ndarray, filename: str, file_key: str, overwrite: bool = False
     ) -> None:
         """Store data to a HDF5 file.
 
@@ -187,13 +181,15 @@ class Metric:
 
         """
         if os.path.exists(filename) and overwrite is False:
-            raise FileExistsError(f"This {filename} file already exists and cannot be overwritten")
+            raise FileExistsError(
+                f"This {filename} file already exists and cannot be overwritten"
+            )
 
         # Load h5 file
         file = h5py.File(filename, "w")
 
         # Store data location from file
-        lst = file_key.split('/')
+        lst = file_key.split("/")
         lst = [i for i in lst if i]
 
         grp = file
