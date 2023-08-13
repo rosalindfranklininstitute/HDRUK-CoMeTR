@@ -19,10 +19,9 @@ class PSNR(Metric):
         target: str,
         predicted_key: str = "/entry/data/data",
         target_key: str = "/entry/data/data",
-        output_text: str = "output.txt",
+        output_text: str = "psnr_result.txt",
     ):
         super().__init__(predicted, target, predicted_key, target_key, output_text)
-        self.output_text = 'psnr_result.txt'
 
     @beartype
     def metric_calc(self, predicted_data: np.ndarray, target_data: np.ndarray) -> float:
@@ -50,7 +49,9 @@ class PSNR(Metric):
             target_tensor = target_tensor.cuda()
 
             # Calculate the peak signal-to-noise ratio on GPU
-            psnr = PeakSignalNoiseRatio(data_range=torch.max(target_tensor) - torch.min(target_tensor)).cuda()
+            psnr = PeakSignalNoiseRatio(
+                data_range=torch.max(target_tensor) - torch.min(target_tensor)
+            ).cuda()
             result = psnr(predicted_tensor, target_tensor)
 
             # convert result to float
@@ -58,7 +59,9 @@ class PSNR(Metric):
 
         else:
             # Calculate the peak signal-to-noise ratio on CPU
-            psnr = PeakSignalNoiseRatio(data_range=torch.max(target_tensor) - torch.min(target_tensor))
+            psnr = PeakSignalNoiseRatio(
+                data_range=torch.max(target_tensor) - torch.min(target_tensor)
+            )
             result = psnr(predicted_tensor, target_tensor)
             final_result = result.detach().item()
 
@@ -66,7 +69,6 @@ class PSNR(Metric):
             f"The Peak Signal-to-Noise Ratio between the {file1_name} and {file2_name} is:\n",
             final_result,
         )
-
 
         return round(final_result, 6)
 
@@ -90,7 +92,7 @@ def main() -> None:
         help="Key to data in the second file",
     )
     parser.add_argument(
-        "-f3", "--output_text", default="output.txt", help="File to store result"
+        "-f3", "--output_text", default="psnr_result.txt", help="File to store result"
     )
     args = parser.parse_args()
     PSNR(

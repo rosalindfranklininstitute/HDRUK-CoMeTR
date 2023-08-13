@@ -21,7 +21,7 @@ class SSIM(Metric):
         file2: str,
         file1_key: str = "/entry/data/data",
         file2_key: str = "/entry/data/data",
-        output_text: str = "output.txt",
+        output_text: str = "ssim_result.txt",
         data_range: Optional[float] = None,
         kernel_size: Union[int, Tuple[int, int, int]] = 11,
         sigma: Union[float, Tuple[float, float, float]] = 1.5,
@@ -445,7 +445,7 @@ def main() -> None:
         help="Key to data in the second file",
     )
     parser.add_argument(
-        "-f3", "--output_text", default="output.txt", help="File to store result"
+        "-f3", "--output_text", default="ssim_result.txt", help="File to store result"
     )
     parser.add_argument(
         "-dr", "--data_range", default=None, help="Range of voxel values in file2"

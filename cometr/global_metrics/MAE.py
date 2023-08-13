@@ -19,10 +19,9 @@ class MAE(Metric):
         file2: str,
         file1_key: str = "/entry/data/data",
         file2_key: str = "/entry/data/data",
-        output_text: str = "output.txt",
+        output_text: str = "mae_result.txt",
     ) -> None:
         super().__init__(file1, file2, file1_key, file2_key, output_text)
-        self.output_text = 'mae_result.txt'
 
     @beartype
     def metric_calc(self, file1_data: np.ndarray, file2_data: np.ndarray) -> float:
@@ -62,10 +61,10 @@ class MAE(Metric):
             result = mae(file1_tensor, file2_tensor)
             final_result = result.detach().item()
 
-        print(f"The Mean Absolute Error between the {file1_name} and {file2_name} is:\n",
-              final_result
+        print(
+            f"The Mean Absolute Error between the {file1_name} and {file2_name} is:\n",
+            final_result,
         )
-
 
         return round(final_result, 6)
 
@@ -89,12 +88,10 @@ def main() -> None:
         help="Key to data in the second file",
     )
     parser.add_argument(
-        "-f3", "--output_text", default="output.txt", help="File to store result"
+        "-f3", "--output_text", default="mae_result.txt", help="File to store result"
     )
     args = parser.parse_args()
-    MAE(
-        args.file1, args.file2, args.file1_key, args.file2_key, args.output_text
-    ).calc()
+    MAE(args.file1, args.file2, args.file1_key, args.file2_key, args.output_text).calc()
 
 
 if __name__ == "__main__":

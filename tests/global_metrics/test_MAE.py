@@ -97,19 +97,17 @@ class MAETest(unittest.TestCase):
             dirname(abspath(__file__)) + "/../data/output.txt",
         )
 
-
     # check consistency of the MAE result
-    # def test_result_consistency(self) -> None:
-    #     """Test consistency of the mean absolute error result."""
-    #     metric = MAE(
-    #         dirname(abspath(__file__)) + "/../data/file1_200.h5",
-    #         dirname(abspath(__file__)) + "/../data/file2_200.h5",
-    #         "/entry/data/data",
-    #         "/entry/data/data",
-    #         dirname(abspath(__file__)) + "/../data/output.txt",
-    #     )
-    #     data1, data2 = metric.load_file()
-    #     self.assertEqual(metric.metric_calc(data1, data2), round(mae_result, 6))
+    def test_result_consistency(self) -> None:
+        """Test consistency of the mean absolute error result."""
+        metric = MAE(
+            dirname(abspath(__file__)) + "/../data/file1_200.h5",
+            dirname(abspath(__file__)) + "/../data/file2_200.h5",
+            "/entry/data/data",
+            "/entry/data/data",
+            dirname(abspath(__file__)) + "/../data/output.txt",
+        )
+        self.assertEqual(metric.calc(), round(mae_result, 6))
 
 
 if __name__ == "__main__":

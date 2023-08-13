@@ -21,7 +21,7 @@ class MSE(Metric):
         file2: str,
         file1_key: str = "/entry/data/data",
         file2_key: str = "/entry/data/data",
-        output_text: str = "output.txt",
+        output_text: str = "mse_result.txt",
     ) -> None:
         super().__init__(file1, file2, file1_key, file2_key, output_text)
 
@@ -91,7 +91,7 @@ def main() -> None:
         help="Key to data in the second file",
     )
     parser.add_argument(
-        "-f3", "--output_text", default="output.txt", help="File to store result"
+        "-f3", "--output_text", default="mse_result.txt", help="File to store result"
     )
     args = parser.parse_args()
     call_func = MSE(
