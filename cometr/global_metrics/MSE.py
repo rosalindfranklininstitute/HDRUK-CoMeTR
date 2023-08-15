@@ -5,10 +5,9 @@ import os
 import numpy as np
 from beartype import beartype
 
-from torch import Tensor
 from torchmetrics.regression import MeanSquaredError
 
-from cometr.global_metrics.Metric import Metric
+from cometr.Metric import Metric
 
 
 class MSE(Metric):

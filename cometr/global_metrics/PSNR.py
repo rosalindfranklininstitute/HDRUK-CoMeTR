@@ -6,7 +6,7 @@ import torch
 from beartype import beartype
 from torchmetrics.image import PeakSignalNoiseRatio
 
-from cometr.global_metrics.Metric import Metric
+from cometr.Metric import Metric
 
 
 class PSNR(Metric):

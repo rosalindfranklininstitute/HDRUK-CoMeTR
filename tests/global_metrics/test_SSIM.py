@@ -1,8 +1,8 @@
 import unittest
 from os.path import dirname, abspath
 
-# from cometr.global_metrics.SSIM import SSIM
-from cometr.global_metrics.Metric import Metric
+from cometr.global_metrics.SSIM import SSIM
+from cometr.Metric import Metric
 
 
 class SSIMTest(unittest.TestCase):

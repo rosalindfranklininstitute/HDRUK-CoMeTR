@@ -8,7 +8,7 @@ import numpy as np
 import shutil
 from beartype.typing import List, Optional, Tuple, Union
 from beartype import beartype
-from cometr.global_metrics.Metric import Metric
+from cometr.Metric import Metric
 
 
 class SSIM(Metric):

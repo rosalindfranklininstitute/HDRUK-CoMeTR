@@ -6,7 +6,7 @@ import torch
 from beartype import beartype
 from torchmetrics.regression import MeanAbsoluteError
 
-from cometr.global_metrics.Metric import Metric
+from cometr.Metric import Metric
 
 
 class MAE(Metric):
