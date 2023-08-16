@@ -1,6 +1,7 @@
 import argparse
 import os
 
+import h5py
 import numpy as np
 import torch
 from beartype import beartype
@@ -10,7 +11,7 @@ from cometr.Metric import Metric
 
 
 class SE(Metric):
-    """Calculates the Squared Error (AE) between two HDF5 files containing voxel data."""
+    """Calculates the Squared Error (SE) between two HDF5 files containing voxel data."""
 
     @beartype
     def __init__(
@@ -19,12 +20,12 @@ class SE(Metric):
         file2: str,
         file1_key: str = "/entry/data/data",
         file2_key: str = "/entry/data/data",
-        output_text: str = "mae_result.txt",
+        output_text: str = "se_result.txt",
     ) -> None:
         super().__init__(file1, file2, file1_key, file2_key, output_text)
 
     @beartype
-    def metric_calc(self, file1_data: np.ndarray, file2_data: np.ndarray) -> float:
+    def metric_calc(self, file1_data: np.ndarray, file2_data: np.ndarray):
         """Calculates the mean absolute error of the two numpy arrays.
 
         Args:
@@ -52,27 +53,41 @@ class SE(Metric):
             se = torch.pow(file1_tensor - file2_tensor, 2).cuda()
             result = se
 
-            # convert result to float
-            final_result = result.cpu().detach()
+            # detach result from gpu
+            final_result = result.cpu().detach().numpy()
+
+            # store result in a h5 file
+            store_result = Metric.store_file(
+                final_result,
+                "se.h5",
+                self.file1_key,
+                overwrite=True,
+            )
 
         else:
             # Calculate the squared error on CPU
-            se = torch.pow(file1_tensor - file2_tensor, 2).cuda()
+            se = torch.pow(file1_tensor - file2_tensor, 2)
             result = se
-            final_result = result.detach()
+            final_result = result.detach().numpy()
+
+            #store result in a h5 file
+            store_result = Metric.store_file(
+                final_result,
+                "se.h5",
+                self.file1_key,
+                overwrite=True,
+            )
 
         print(
             f"The Squared Error between the {file1_name} and {file2_name} is:\n",
             final_result,
         )
 
-        return final_result
+        return
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(
-        description="Calculate the SE of two numpy arrays"
-    )
+    parser = argparse.ArgumentParser(description="Calculate the SE of two numpy arrays")
     parser.add_argument("-f1", "--file1", required=True, help="Path to the first file")
     parser.add_argument("-f2", "--file2", required=True, help="Path to the second file")
     parser.add_argument(
@@ -88,7 +103,7 @@ def main() -> None:
         help="Key to data in the second file",
     )
     parser.add_argument(
-        "-f3", "--output_text", default="mae_result.txt", help="File to store result"
+        "-f3", "--output_text", default="se_result.txt", help="File to store result"
     )
     args = parser.parse_args()
     SE(args.file1, args.file2, args.file1_key, args.file2_key, args.output_text).calc()
