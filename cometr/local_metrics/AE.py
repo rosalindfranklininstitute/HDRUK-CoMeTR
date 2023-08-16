@@ -1,6 +1,8 @@
 import argparse
 import os
+from os.path import dirname, abspath
 
+import h5py
 import numpy as np
 import torch
 from beartype import beartype
@@ -19,12 +21,12 @@ class AE(Metric):
         file2: str,
         file1_key: str = "/entry/data/data",
         file2_key: str = "/entry/data/data",
-        output_text: str = "mae_result.txt",
+        output_text: str = "ae_result.txt",
     ) -> None:
         super().__init__(file1, file2, file1_key, file2_key, output_text)
 
-    @beartype
-    def metric_calc(self, file1_data: np.ndarray, file2_data: np.ndarray) -> float:
+    #@beartype
+    def metric_calc(self, file1_data: np.ndarray, file2_data: np.ndarray):
         """Calculates the absolute error of the two numpy arrays.
 
         Args:
@@ -53,26 +55,36 @@ class AE(Metric):
             result = ae
 
             # convert result to float
-            final_result = result.cpu().detach()
+            final_result = result.cpu().detach().numpy()
+            store_result = Metric.store_file(
+                final_result,
+                "ae.h5",
+                self.file1_key,
+                overwrite=True,
+            )
 
         else:
             # Calculate the absolute error on CPU
             ae = torch.abs(file1_tensor - file2_tensor)
             result = ae
-            final_result = result.detach()
+            final_result = result.detach().numpy()
+            store_result = Metric.store_file(
+                final_result,
+                "ae.h5",
+                self.file1_key,
+                overwrite=True,
+            )
 
         print(
             f"The Absolute Error between the {file1_name} and {file2_name} is:\n",
             final_result,
         )
 
-        return final_result
+        return
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(
-        description="Calculate the AE of two numpy arrays"
-    )
+    parser = argparse.ArgumentParser(description="Calculate the AE of two numpy arrays")
     parser.add_argument("-f1", "--file1", required=True, help="Path to the first file")
     parser.add_argument("-f2", "--file2", required=True, help="Path to the second file")
     parser.add_argument(
@@ -88,7 +100,7 @@ def main() -> None:
         help="Key to data in the second file",
     )
     parser.add_argument(
-        "-f3", "--output_text", default="mae_result.txt", help="File to store result"
+        "-f3", "--output_text", default="ae_result.txt", help="File to store result"
     )
     args = parser.parse_args()
     AE(args.file1, args.file2, args.file1_key, args.file2_key, args.output_text).calc()
