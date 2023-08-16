@@ -53,20 +53,20 @@ class AE(Metric):
             result = ae
 
             # convert result to float
-            final_result = result.cpu().detach().item()
+            final_result = result.cpu().detach()
 
         else:
             # Calculate the absolute error on CPU
             ae = torch.abs(file1_tensor - file2_tensor)
             result = ae
-            final_result = result.detach().item()
+            final_result = result.detach()
 
         print(
             f"The Absolute Error between the {file1_name} and {file2_name} is:\n",
             final_result,
         )
 
-        return round(final_result, 6)
+        return final_result
 
 
 def main() -> None:
