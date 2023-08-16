@@ -9,8 +9,8 @@ from torchmetrics.regression import MeanAbsoluteError
 from cometr.Metric import Metric
 
 
-class AE(Metric):
-    """Calculates the Absolute Error (AE) between two HDF5 files containing voxel data."""
+class SE(Metric):
+    """Calculates the Squared Error (AE) between two HDF5 files containing voxel data."""
 
     @beartype
     def __init__(
@@ -53,20 +53,20 @@ class AE(Metric):
             result = se
 
             # convert result to float
-            final_result = result.cpu().detach().item()
+            final_result = result.cpu().detach()
 
         else:
             # Calculate the squared error on CPU
             se = torch.pow(file1_tensor - file2_tensor, 2).cuda()
             result = se
-            final_result = result.detach().item()
+            final_result = result.detach()
 
         print(
             f"The Squared Error between the {file1_name} and {file2_name} is:\n",
             final_result,
         )
 
-        return round(final_result, 6)
+        return final_result
 
 
 def main() -> None:
@@ -91,7 +91,7 @@ def main() -> None:
         "-f3", "--output_text", default="mae_result.txt", help="File to store result"
     )
     args = parser.parse_args()
-    AE(args.file1, args.file2, args.file1_key, args.file2_key, args.output_text).calc()
+    SE(args.file1, args.file2, args.file1_key, args.file2_key, args.output_text).calc()
 
 
 if __name__ == "__main__":
