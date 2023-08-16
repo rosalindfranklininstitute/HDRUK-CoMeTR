@@ -220,10 +220,10 @@ class Metric:
 
     @beartype
     def calc(self) -> float:
-        """Gets the mean squared error of the two numpy arrays and saves the result to the specified text file.
+        """Calculates the specified metric of the two numpy arrays and saves the result to the specified text file.
 
         Returns:
-            float: The mean squared error of the two numpy arrays.
+            float: The specified metric of the two numpy arrays.
 
         """
         # load voxel data arrays of both files
