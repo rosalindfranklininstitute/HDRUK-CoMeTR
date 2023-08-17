@@ -1,5 +1,6 @@
 import argparse
 import os
+from os.path import dirname, abspath
 
 import h5py
 import numpy as np
@@ -41,6 +42,10 @@ class SE(Metric):
         file1_name = os.path.basename(self.file1)
         file2_name = os.path.basename(self.file2)
 
+        # load voxel data arrays of both files
+        file1_data = Metric.load_file(self.file1, self.file1_key)
+        file2_data = Metric.load_file(self.file2, self.file2_key)
+
         # Convert data to tensors
         file1_tensor = torch.from_numpy(file1_data)
         file2_tensor = torch.from_numpy(file2_data)
@@ -59,7 +64,7 @@ class SE(Metric):
             # store result in a h5 file
             store_result = Metric.store_file(
                 final_result,
-                "se.h5",
+                dirname(abspath(__file__)) + "/../../lm_h5data/se.h5",
                 self.file1_key,
                 overwrite=True,
             )
@@ -70,17 +75,16 @@ class SE(Metric):
             result = se
             final_result = result.detach().numpy()
 
-            #store result in a h5 file
+            # store result in a h5 file
             store_result = Metric.store_file(
                 final_result,
-                "se.h5",
+                dirname(abspath(__file__)) + "/../../lm_h5data/se.h5",
                 self.file1_key,
                 overwrite=True,
             )
 
         print(
-            f"The Squared Error between the {file1_name} and {file2_name} is:\n",
-            final_result,
+            f"The Squared Error between the {file1_name} and {file2_name} is stored in the se.h5 file",
         )
 
         return
@@ -106,7 +110,13 @@ def main() -> None:
         "-f3", "--output_text", default="se_result.txt", help="File to store result"
     )
     args = parser.parse_args()
-    SE(args.file1, args.file2, args.file1_key, args.file2_key, args.output_text).calc()
+    se_instance = SE(
+        args.file1, args.file2, args.file1_key, args.file2_key, args.output_text
+    )
+    file1_data = se_instance.load_file(args.file1, args.file1_key)
+    file2_data = se_instance.load_file(args.file2, args.file2_key)
+
+    se_instance.metric_calc(file1_data, file2_data)
 
 
 if __name__ == "__main__":

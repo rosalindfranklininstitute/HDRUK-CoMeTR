@@ -6,7 +6,7 @@ import h5py
 import numpy as np
 import torch
 from beartype import beartype
-from torchmetrics.regression import MeanAbsoluteError
+
 
 from cometr.Metric import Metric
 
@@ -23,12 +23,16 @@ class AE(Metric):
         file2_key: str = "/entry/data/data",
         output_text: str = "ae_result.txt",
     ) -> None:
-        super().__init__(file1, file2, file1_key, file2_key, output_text)
-
-
+        super().__init__(
+            file1,
+            file2,
+            file1_key,
+            file2_key,
+            output_text="output.txt",
+        )
 
     @beartype
-    def metric_calc(self, file1_data: np.ndarray, file2_data: np.ndarray):
+    def metric_calc(self, file1_data: np.ndarray, file2_data: np.ndarray) -> None:
         """Calculates the absolute error of the two numpy arrays.
 
         Args:
@@ -44,13 +48,9 @@ class AE(Metric):
         file1_name = os.path.basename(self.file1)
         file2_name = os.path.basename(self.file2)
 
-        # load files
         # load voxel data arrays of both files
         file1_data = Metric.load_file(self.file1, self.file1_key)
         file2_data = Metric.load_file(self.file2, self.file2_key)
-
-
-
 
         # Convert data to tensors
         file1_tensor = torch.from_numpy(file1_data)
@@ -68,7 +68,7 @@ class AE(Metric):
             final_result = result.cpu().detach().numpy()
             store_result = Metric.store_file(
                 final_result,
-                "ae.h5",
+                dirname(abspath(__file__)) + "/../../lm_h5data/se.h5",
                 self.file1_key,
                 overwrite=True,
             )
@@ -80,14 +80,13 @@ class AE(Metric):
             final_result = result.detach().numpy()
             store_result = Metric.store_file(
                 final_result,
-                "ae.h5",
+                dirname(abspath(__file__)) + "/../../lm_h5data/se.h5",
                 self.file1_key,
                 overwrite=True,
             )
 
         print(
-            f"The Absolute Error between the {file1_name} and {file2_name} is:\n",
-            final_result,
+            f"The Squared Error between the {file1_name} and {file2_name} is stored in the ae.h5 file",
         )
 
         return
@@ -112,8 +111,11 @@ def main() -> None:
     parser.add_argument(
         "-f3", "--output_text", default="ae_result.txt", help="File to store result"
     )
+
     args = parser.parse_args()
-    ae_instance = AE(args.file1, args.file2, args.file1_key, args.file2_key, args.output_text)
+    ae_instance = AE(
+        args.file1, args.file2, args.file1_key, args.file2_key, args.output_text
+    )
     file1_data = ae_instance.load_file(args.file1, args.file1_key)
     file2_data = ae_instance.load_file(args.file2, args.file2_key)
 
