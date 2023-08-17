@@ -11,7 +11,7 @@ from beartype import beartype
 from cometr.Metric import Metric
 
 
-class AE(Metric):
+class AbsoluteError(Metric):
     """Calculates the Absolute Error (AE) between two HDF5 files containing voxel data."""
 
     @beartype
@@ -48,10 +48,6 @@ class AE(Metric):
         file1_name = os.path.basename(self.file1)
         file2_name = os.path.basename(self.file2)
 
-        # load voxel data arrays of both files
-        file1_data = Metric.load_file(self.file1, self.file1_key)
-        file2_data = Metric.load_file(self.file2, self.file2_key)
-
         # Convert data to tensors
         file1_tensor = torch.from_numpy(file1_data)
         file2_tensor = torch.from_numpy(file2_data)
@@ -64,7 +60,7 @@ class AE(Metric):
             ae = torch.abs(file1_tensor - file2_tensor).cuda()
             result = ae
 
-            # convert result to float
+            # convert result to numpy arrays
             final_result = result.cpu().detach().numpy()
             store_result = Metric.store_file(
                 final_result,
@@ -91,6 +87,15 @@ class AE(Metric):
 
         return
 
+    def calc(self) -> None:
+        # load voxel data arrays of both files
+        file1_data = Metric.load_file(self.file1, self.file1_key)
+        file2_data = Metric.load_file(self.file2, self.file2_key)
+
+        self.metric_calc(file1_data, file2_data)
+
+        return
+
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Calculate the AE of two numpy arrays")
@@ -113,13 +118,9 @@ def main() -> None:
     )
 
     args = parser.parse_args()
-    ae_instance = AE(
+    ae_instance = AbsoluteError(
         args.file1, args.file2, args.file1_key, args.file2_key, args.output_text
-    )
-    file1_data = ae_instance.load_file(args.file1, args.file1_key)
-    file2_data = ae_instance.load_file(args.file2, args.file2_key)
-
-    ae_instance.metric_calc(file1_data, file2_data)
+    ).calc()
 
 
 if __name__ == "__main__":

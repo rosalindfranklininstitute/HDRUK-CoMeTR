@@ -11,7 +11,7 @@ from torchmetrics.regression import MeanAbsoluteError
 from cometr.Metric import Metric
 
 
-class SE(Metric):
+class SquaredError(Metric):
     """Calculates the Squared Error (SE) between two HDF5 files containing voxel data."""
 
     @beartype
@@ -41,10 +41,6 @@ class SE(Metric):
         # Extract names of the  files
         file1_name = os.path.basename(self.file1)
         file2_name = os.path.basename(self.file2)
-
-        # load voxel data arrays of both files
-        file1_data = Metric.load_file(self.file1, self.file1_key)
-        file2_data = Metric.load_file(self.file2, self.file2_key)
 
         # Convert data to tensors
         file1_tensor = torch.from_numpy(file1_data)
@@ -89,6 +85,15 @@ class SE(Metric):
 
         return
 
+    def calc(self) -> None:
+        # load voxel data arrays of both files
+        file1_data = Metric.load_file(self.file1, self.file1_key)
+        file2_data = Metric.load_file(self.file2, self.file2_key)
+
+        self.metric_calc(file1_data, file2_data)
+
+        return
+
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Calculate the SE of two numpy arrays")
@@ -110,13 +115,9 @@ def main() -> None:
         "-f3", "--output_text", default="se_result.txt", help="File to store result"
     )
     args = parser.parse_args()
-    se_instance = SE(
+    se_instance = SquaredError(
         args.file1, args.file2, args.file1_key, args.file2_key, args.output_text
-    )
-    file1_data = se_instance.load_file(args.file1, args.file1_key)
-    file2_data = se_instance.load_file(args.file2, args.file2_key)
-
-    se_instance.metric_calc(file1_data, file2_data)
+    ).calc()
 
 
 if __name__ == "__main__":
