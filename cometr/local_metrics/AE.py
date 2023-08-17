@@ -68,7 +68,7 @@ class AE(Metric):
             final_result = result.cpu().detach().numpy()
             store_result = Metric.store_file(
                 final_result,
-                dirname(abspath(__file__)) + "/../../lm_h5data/se.h5",
+                dirname(abspath(__file__)) + "/../../lm_h5data/ae.h5",
                 self.file1_key,
                 overwrite=True,
             )
@@ -80,13 +80,13 @@ class AE(Metric):
             final_result = result.detach().numpy()
             store_result = Metric.store_file(
                 final_result,
-                dirname(abspath(__file__)) + "/../../lm_h5data/se.h5",
+                dirname(abspath(__file__)) + "/../../lm_h5data/ae.h5",
                 self.file1_key,
                 overwrite=True,
             )
 
         print(
-            f"The Squared Error between the {file1_name} and {file2_name} is stored in the ae.h5 file",
+            f"The Absolute Error between the {file1_name} and {file2_name} is stored in the ae.h5 file",
         )
 
         return
