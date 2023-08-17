@@ -25,7 +25,9 @@ class AE(Metric):
     ) -> None:
         super().__init__(file1, file2, file1_key, file2_key, output_text)
 
-    #@beartype
+
+
+    @beartype
     def metric_calc(self, file1_data: np.ndarray, file2_data: np.ndarray):
         """Calculates the absolute error of the two numpy arrays.
 
@@ -41,6 +43,14 @@ class AE(Metric):
         # Extract names of the  files
         file1_name = os.path.basename(self.file1)
         file2_name = os.path.basename(self.file2)
+
+        # load files
+        # load voxel data arrays of both files
+        file1_data = Metric.load_file(self.file1, self.file1_key)
+        file2_data = Metric.load_file(self.file2, self.file2_key)
+
+
+
 
         # Convert data to tensors
         file1_tensor = torch.from_numpy(file1_data)
@@ -103,7 +113,11 @@ def main() -> None:
         "-f3", "--output_text", default="ae_result.txt", help="File to store result"
     )
     args = parser.parse_args()
-    AE(args.file1, args.file2, args.file1_key, args.file2_key, args.output_text).calc()
+    ae_instance = AE(args.file1, args.file2, args.file1_key, args.file2_key, args.output_text)
+    file1_data = ae_instance.load_file(args.file1, args.file1_key)
+    file2_data = ae_instance.load_file(args.file2, args.file2_key)
+
+    ae_instance.metric_calc(file1_data, file2_data)
 
 
 if __name__ == "__main__":
