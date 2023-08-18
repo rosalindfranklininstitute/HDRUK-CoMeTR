@@ -93,7 +93,6 @@ class FSC(Metric):
         else:
             print("Apodization in 3D. This takes time and memory...")
             p0 = time.time()
-            # TODO: find a more efficient way to do this. It know this is not optimum
             window3D = self.transverse_apodization()
             circle3D = np.asarray([circular_region for i in range(self.n_slice)])
             self.window = (np.array([np.squeeze(circle3D[:, :, i]) * window3D[0] for i in range(self.n_col)]).swapaxes(0, 1).swapaxes(1, 2))
