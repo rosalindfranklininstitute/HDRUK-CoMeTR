@@ -64,12 +64,14 @@ class FSC(Metric):
         file1_2Ddata = file1_data[:, :, z_index]
         file2_2Ddata = file2_data[:, :, z_index]
 
+        miplibImg1 = miplibImage(images=file1_2Ddata, spacing=(self.pixel_size, self.pixel_size))
+        miplibImg2 = miplibImage(images=file2_2Ddata, spacing=(self.pixel_size, self.pixel_size))
 
-        miplibImg1 = reader.Image(file1_2Ddata, self.pixel_size)
-        miplibImg2 = reader.Image(file2_2Ddata, self.pixel_size)
+        # miplibImg1 = reader.Image(img_data=file1_2Ddata, pixel_size=self.pixel_size)
+        # miplibImg2 = reader.Image(img_data=file2_2Ddata, pixel_size=self.pixel_size)
 
-        # assert isinstance(miplibImg1, miplibImage)
-        # assert isinstance(miplibImg2, miplibImage)
+        assert isinstance(miplibImg1, miplibImage)
+        assert isinstance(miplibImg2, miplibImage)
 
         frc_data = FourierCorrelationDataCollection()
 
