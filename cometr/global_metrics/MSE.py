@@ -23,6 +23,7 @@ class MSE(Metric):
         output_text: str = "mse_result.txt",
     ) -> None:
         super().__init__(file1, file2, file1_key, file2_key, output_text)
+        self.output_text = "mse_result.txt"
 
     @beartype
     def metric_calc(self, file1_data: np.ndarray, file2_data: np.ndarray) -> float:

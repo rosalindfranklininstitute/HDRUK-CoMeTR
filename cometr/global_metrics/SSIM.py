@@ -31,8 +31,9 @@ class SSIM(Metric):
         tmp_root: Optional[str] = None,
     ):
         super().__init__(file1, file2, file1_key, file2_key, output_text)
+        self.output_text = "ssim_result.txt"
 
-        # make into tuple
+        #  Convert kernel_size and sigma to tuples if they are integers or floats
         self.kernel_size = kernel_size
         if isinstance(self.kernel_size, int):
             self.kernel_size = (self.kernel_size,) * 3
@@ -51,10 +52,26 @@ class SSIM(Metric):
         self,
         inp: torch.Tensor,
     ) -> Tensor:
+        """Perform 3D Gaussian blur on the input tensor using the kernel and sigma.
+
+        Args:
+            inp (torch.Tensor): Input tensor to apply Gaussian blur to.
+
+        Returns:
+            torch.Tensor: Gaussian-blurred output tensor.
+        """
+
         def gaussian(sz: int, sg: float, dev: Union[int, str] = "cpu") -> Tensor:
             g = torch.exp(
                 -torch.pow(
-                    torch.arange((1 - sz) / 2, (1 + sz) / 2, step=1, device=dev) / sg, 2
+                    torch.arange(
+                        (1 - sz) / 2,
+                        (1 + sz) / 2,
+                        step=1,
+                        device=dev,
+                    )
+                    / sg,
+                    2,
                 )
                 / 2
             )
@@ -95,6 +112,15 @@ class SSIM(Metric):
 
     @beartype
     def mu_sq(self, filename: str, file_key: str, dir_path: str) -> None:
+        """Calculates and stores the squared mean (mu_sq) and squared difference (sigma_sq)
+        between input data and squared mean using Gaussian blurring.
+
+        Args:
+            filename (str): Name of the input file containing data.
+            file_key (str): Key to access data within the input file.
+            dir_path (str): Directory path for output files.
+
+        """
         name = basename(filename)[:-3]
 
         A = torch.from_numpy(Metric.load_file(filename, file_key)).to(self.device)
@@ -105,7 +131,7 @@ class SSIM(Metric):
                 "Data from the input filename has to 3D (HxWXD) or 5D (BxCxHxWxD)"
             )
 
-        # This is mu
+        # Calculate and store mu
         A = self.gaussian_blur_3d(A)
         if self.device != "cpu":
             Metric.store_file(
@@ -122,7 +148,7 @@ class SSIM(Metric):
                 self.overwrite,
             )
 
-        # This is mu_sq
+        # Calculate and store mu_sq
         A = A.pow(2)
         if self.device != "cpu":
             Metric.store_file(
@@ -139,6 +165,7 @@ class SSIM(Metric):
                 self.overwrite,
             )
 
+        # Load input data again and ensure correct dimensions
         A = torch.from_numpy(Metric.load_file(filename, file_key)).to(self.device)
         if A.dim() == 3:
             A = A.expand(1, 1, A.size(0), A.size(1), A.size(2))
@@ -149,8 +176,10 @@ class SSIM(Metric):
 
         A = A.pow(2)
 
+        # Calculate and store mu_sq using Gaussian blurring
         A = self.gaussian_blur_3d(A)
 
+        # Load mu_sq data and ensure correct dimensions
         B = torch.from_numpy(
             Metric.load_file(dir_path + "/" + name + "_mu_sq.h5", file_key)
         ).to(self.device)
@@ -161,6 +190,7 @@ class SSIM(Metric):
                 "Data from the input filename has to 3D (HxWXD) or 5D (BxCxHxWxD)"
             )
 
+        # Calculate and store sigma_sq
         A = A - B
 
         if self.device != "cpu":
@@ -181,6 +211,11 @@ class SSIM(Metric):
 
     @beartype
     def co(self, dir_path: str) -> None:
+        """Calculate and store covariance between the two datasets using Gaussian-blurred mean products.
+
+        Args:
+            dir_path (str): Directory path for output files.
+        """
         name1 = basename(self.file1)[:-3]
         name2 = basename(self.file2)[:-3]
 
@@ -367,7 +402,7 @@ class SSIM(Metric):
             A = A.expand(1, 1, A.size(0), A.size(1), A.size(2))
         if A.dim() != 5:
             nm = dir_path + "/" + name1 + "_mu.h5"
-            raise ValueError(f"Data in the {nm} has to 3D (HxWXD) or 5D (BxCxHxWxD)")
+            raise ValueError(f"Data in the {nm} has to be 3D (HxWXD) or 5D (BxCxHxWxD)")
 
         B = torch.from_numpy(
             Metric.load_file(dir_path + "/" + name2 + "_mu_sq.h5", self.file2_key)
@@ -376,7 +411,7 @@ class SSIM(Metric):
             B = B.expand(1, 1, B.size(0), B.size(1), B.size(2))
         if B.dim() != 5:
             nm = dir_path + "/" + name2 + "_mu_sq.h5"
-            raise ValueError(f"Data in the {nm} has to 3D (HxWXD) or 5D (BxCxHxWxD)")
+            raise ValueError(f"Data in the {nm} has to be 3D (HxWXD) or 5D (BxCxHxWxD)")
 
         A = A + B + C1
 
@@ -404,7 +439,7 @@ class SSIM(Metric):
             B = B.expand(1, 1, B.size(0), B.size(1), B.size(2))
         if B.dim() != 5:
             nm = dir_path + "/" + name1 + "_" + name2 + "_cs_map.h5"
-            raise ValueError(f"Data in the {nm} has to 3D (HxWXD) or 5D (BxCxHxWxD)")
+            raise ValueError(f"Data in the {nm} has to be 3D (HxWXD) or 5D (BxCxHxWxD)")
 
         A = A * B
 
