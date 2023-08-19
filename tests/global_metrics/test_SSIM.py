@@ -13,7 +13,7 @@ class SSIMTest(unittest.TestCase):
         """Test if FileNotFoundError is raised when a file does not exist."""
 
         with self.assertRaises(FileNotFoundError):
-            Metric(
+            SSIM(
                 dirname(abspath(__file__)) + "/../data/file3_300.h5",
                 dirname(abspath(__file__)) + "/../data/file2_1000.h5",
                 "/entry/data/data",
@@ -26,7 +26,7 @@ class SSIMTest(unittest.TestCase):
         """Test if TypeError and NameError are raised when files are not in h5py format."""
 
         with self.assertRaises(TypeError):
-            Metric(
+            SSIM(
                 dirname(abspath(__file__)) + "/../data/output.txt",
                 dirname(abspath(__file__)) + "/../data/file2_1000.h5",
                 "/entry/data/data",
@@ -48,7 +48,7 @@ class SSIMTest(unittest.TestCase):
         """Test if NameError is raised when the data key is not valid in the HDF5 file."""
 
         with self.assertRaises(NameError):
-            Metric(
+            SSIM(
                 dirname(abspath(__file__)) + "/../data/file1_1000.h5",
                 dirname(abspath(__file__)) + "/../data/file3_100.h5",
                 "/data",
@@ -61,15 +61,13 @@ class SSIMTest(unittest.TestCase):
         """Test if ValueError is raised when the dimensions of the data do not match."""
 
         with self.assertRaises(ValueError):
-            Metric(
+            SSIM(
                 dirname(abspath(__file__)) + "/../data/file1_200.h5",
                 dirname(abspath(__file__)) + "/../data/file2_1000.h5",
                 "/entry/data/data",
                 "/entry/data/data",
                 dirname(abspath(__file__)) + "/../data/output.txt",
             )
-
-    # Check that the calc_mse's results are consistent
 
 
 if __name__ == "__main__":
