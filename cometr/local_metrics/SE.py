@@ -60,7 +60,7 @@ class SquaredError(Metric):
             # store result in a h5 file
             store_result = Metric.store_file(
                 final_result,
-                dirname(abspath(__file__)) + "/../../lm_h5data/se.h5",
+                dirname(abspath(__file__)) + "/../../localmetrics_h5data/se.h5",
                 self.file1_key,
                 overwrite=True,
             )
@@ -74,7 +74,7 @@ class SquaredError(Metric):
             # store result in a h5 file
             store_result = Metric.store_file(
                 final_result,
-                dirname(abspath(__file__)) + "/../../lm_h5data/se.h5",
+                dirname(abspath(__file__)) + "/../../localmetrics_h5data/se.h5",
                 self.file1_key,
                 overwrite=True,
             )
