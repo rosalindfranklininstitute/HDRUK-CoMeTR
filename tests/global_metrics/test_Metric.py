@@ -1,7 +1,7 @@
 import unittest
 from os.path import dirname, abspath
 
-from cometr.global_metrics.Metric import Metric
+from cometr.Metric import Metric
 
 
 class MetricTest(unittest.TestCase):

@@ -6,7 +6,7 @@ import torch
 from beartype import beartype
 from torchmetrics.regression import MeanAbsoluteError
 
-from cometr.global_metrics.Metric import Metric
+from cometr.Metric import Metric
 
 
 class MAE(Metric):
@@ -22,6 +22,7 @@ class MAE(Metric):
         output_text: str = "mae_result.txt",
     ) -> None:
         super().__init__(file1, file2, file1_key, file2_key, output_text)
+        self.output_text = "mae_result.txt"
 
     @beartype
     def metric_calc(self, file1_data: np.ndarray, file2_data: np.ndarray) -> float:

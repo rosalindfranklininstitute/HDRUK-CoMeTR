@@ -6,7 +6,7 @@ import torch
 from beartype import beartype
 from torchmetrics.image import PeakSignalNoiseRatio
 
-from cometr.global_metrics.Metric import Metric
+from cometr.Metric import Metric
 
 
 class PSNR(Metric):
@@ -22,6 +22,7 @@ class PSNR(Metric):
         output_text: str = "psnr_result.txt",
     ):
         super().__init__(predicted, target, predicted_key, target_key, output_text)
+        self.output_text = "psnr_result.txt"
 
     @beartype
     def metric_calc(self, predicted_data: np.ndarray, target_data: np.ndarray) -> float:

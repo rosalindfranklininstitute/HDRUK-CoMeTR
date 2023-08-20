@@ -5,10 +5,9 @@ import os
 import numpy as np
 from beartype import beartype
 
-from torch import Tensor
 from torchmetrics.regression import MeanSquaredError
 
-from cometr.global_metrics.Metric import Metric
+from cometr.Metric import Metric
 
 
 class MSE(Metric):
@@ -24,6 +23,7 @@ class MSE(Metric):
         output_text: str = "mse_result.txt",
     ) -> None:
         super().__init__(file1, file2, file1_key, file2_key, output_text)
+        self.output_text = "mse_result.txt"
 
     @beartype
     def metric_calc(self, file1_data: np.ndarray, file2_data: np.ndarray) -> float:

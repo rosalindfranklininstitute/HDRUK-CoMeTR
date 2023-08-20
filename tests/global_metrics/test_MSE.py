@@ -1,8 +1,7 @@
 import unittest
 from os.path import dirname, abspath
-
 from cometr.global_metrics.MSE import MSE
-from cometr.global_metrics.Metric import Metric
+from cometr.Metric import Metric
 
 
 class MSETest(unittest.TestCase):
@@ -13,7 +12,7 @@ class MSETest(unittest.TestCase):
         """Test if FileNotFoundError is raised when a file does not exist."""
 
         with self.assertRaises(FileNotFoundError):
-            Metric(
+            MSE(
                 dirname(abspath(__file__)) + "/../data/file3_300.h5",
                 dirname(abspath(__file__)) + "/../data/file2_1000.h5",
                 "/entry/data/data",
@@ -26,7 +25,7 @@ class MSETest(unittest.TestCase):
         """Test if TypeError and NameError are raised when files are not in h5py format."""
 
         with self.assertRaises(TypeError):
-            Metric(
+            MSE(
                 dirname(abspath(__file__)) + "/../data/output.txt",
                 dirname(abspath(__file__)) + "/../data/file2_1000.h5",
                 "/entry/data/data",
@@ -35,7 +34,7 @@ class MSETest(unittest.TestCase):
             )
 
         with self.assertRaises(NameError):
-            Metric(
+            MSE(
                 dirname(abspath(__file__)) + "/../data/file4_100",
                 dirname(abspath(__file__)) + "/../data/file2_1000.h5",
                 "/entry/data/data",
@@ -48,7 +47,7 @@ class MSETest(unittest.TestCase):
         """Test if NameError is raised when the output file format is not '.txt'."""
 
         with self.assertRaises(NameError):
-            Metric(
+            MSE(
                 dirname(abspath(__file__)) + "/../data/file1_1000.h5",
                 dirname(abspath(__file__)) + "/../data/file2_1000.h5",
                 "/entry/data/data",
@@ -61,7 +60,7 @@ class MSETest(unittest.TestCase):
         """Test if NameError is raised when the data key is not valid in the HDF5 file."""
 
         with self.assertRaises(NameError):
-            Metric(
+            MSE(
                 dirname(abspath(__file__)) + "/../data/file1_1000.h5",
                 dirname(abspath(__file__)) + "/../data/file3_100.h5",
                 "/data",
@@ -74,7 +73,7 @@ class MSETest(unittest.TestCase):
         """Test if ValueError is raised when the dimensions of the data do not match."""
 
         with self.assertRaises(ValueError):
-            Metric(
+            MSE(
                 dirname(abspath(__file__)) + "/../data/file1_200.h5",
                 dirname(abspath(__file__)) + "/../data/file2_1000.h5",
                 "/entry/data/data",
@@ -83,8 +82,8 @@ class MSETest(unittest.TestCase):
             )
 
     # Check that the calc_mse's results are consistent
-    @staticmethod
-    def test_MSE_result() -> None:
+
+    def test_MSE_result(self) -> None:
         """Test the consistency of the calc_mse() results."""
 
         metric = MSE(
