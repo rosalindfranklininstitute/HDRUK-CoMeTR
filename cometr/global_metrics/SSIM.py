@@ -17,10 +17,10 @@ class SSIM(Metric):
     @beartype
     def __init__(
         self,
-        file1: str,
-        file2: str,
-        file1_key: str = "/entry/data/data",
-        file2_key: str = "/entry/data/data",
+        predicted: str,
+        ground_truth: str,
+        predicted_key: str = "/entry/data/data",
+        ground_truth_key: str = "/entry/data/data",
         output_text: str = "ssim_result.txt",
         data_range: Optional[float] = None,
         kernel_size: Union[int, Tuple[int, int, int]] = 11,
@@ -30,7 +30,9 @@ class SSIM(Metric):
         overwrite: bool = False,
         tmp_root: Optional[str] = None,
     ):
-        super().__init__(file1, file2, file1_key, file2_key, output_text)
+        super().__init__(
+            predicted, ground_truth, predicted_key, ground_truth_key, output_text
+        )
         self.output_text = "ssim_result.txt"
 
         #  Convert kernel_size and sigma to tuples if they are integers or floats
@@ -216,12 +218,12 @@ class SSIM(Metric):
         Args:
             dir_path (str): Directory path for output files.
         """
-        name1 = basename(self.file1)[:-3]
-        name2 = basename(self.file2)[:-3]
+        name1 = basename(self.predicted)[:-3]
+        name2 = basename(self.ground_truth)[:-3]
 
         # This is mu1
         A = torch.from_numpy(
-            Metric.load_file(dir_path + "/" + name2 + "_mu.h5", self.file1_key)
+            Metric.load_file(dir_path + "/" + name2 + "_mu.h5", self.predicted_key)
         ).to(self.device)
         if A.dim() == 3:
             A = A.expand(1, 1, A.size(0), A.size(1), A.size(2))
@@ -230,7 +232,7 @@ class SSIM(Metric):
             raise ValueError(f"Data in the {nm} has to 3D (HxWXD) or 5D (BxCxHxWxD)")
 
         B = torch.from_numpy(
-            Metric.load_file(dir_path + "/" + name2 + "_mu.h5", self.file2_key)
+            Metric.load_file(dir_path + "/" + name2 + "_mu.h5", self.ground_truth_key)
         ).to(self.device)
         if B.dim() == 3:
             B = B.expand(1, 1, B.size(0), B.size(1), B.size(2))
@@ -245,35 +247,35 @@ class SSIM(Metric):
             Metric.store_file(
                 A.detach().cpu().numpy(),
                 dir_path + "/" + name1 + "_" + name2 + "_mu1_mu2.h5",
-                self.file1_key,
+                self.predicted_key,
                 self.overwrite,
             )
         else:
             Metric.store_file(
                 A.detach().numpy(),
                 dir_path + "/" + name1 + "_" + name2 + "_mu1_mu2.h5",
-                self.file1_key,
+                self.predicted_key,
                 self.overwrite,
             )
 
-        A = torch.from_numpy(Metric.load_file(self.file1, self.file1_key)).to(
+        A = torch.from_numpy(Metric.load_file(self.predicted, self.predicted_key)).to(
             self.device
         )
         if A.dim() == 3:
             A = A.expand(1, 1, A.size(0), A.size(1), A.size(2))
         if A.dim() != 5:
             raise ValueError(
-                f"Data in the {self.file1} has to 3D (HxWXD) or 5D (BxCxHxWxD)"
+                f"Data in the {self.predicted} has to 3D (HxWXD) or 5D (BxCxHxWxD)"
             )
 
-        B = torch.from_numpy(Metric.load_file(self.file2, self.file2_key)).to(
-            self.device
-        )
+        B = torch.from_numpy(
+            Metric.load_file(self.ground_truth, self.ground_truth_key)
+        ).to(self.device)
         if B.dim() == 3:
             B = B.expand(1, 1, B.size(0), B.size(1), B.size(2))
         if B.dim() != 5:
             raise ValueError(
-                f"Data in the {self.file2} has to 3D (HxWXD) or 5D (BxCxHxWxD)"
+                f"Data in the {self.ground_truth} has to 3D (HxWXD) or 5D (BxCxHxWxD)"
             )
 
         A = A * B
@@ -282,7 +284,7 @@ class SSIM(Metric):
 
         B = torch.from_numpy(
             Metric.load_file(
-                dir_path + "/" + name1 + "_" + name2 + "_mu1_mu2.h5", self.file1_key
+                dir_path + "/" + name1 + "_" + name2 + "_mu1_mu2.h5", self.predicted_key
             )
         ).to(self.device)
         if B.dim() == 3:
@@ -298,27 +300,29 @@ class SSIM(Metric):
             Metric.store_file(
                 A.detach().cpu().numpy(),
                 dir_path + "/" + name1 + "_" + name2 + "_sigma12.h5",
-                self.file1_key,
+                self.predicted_key,
                 self.overwrite,
             )
         else:
             Metric.store_file(
                 A.detach().numpy(),
                 dir_path + "/" + name1 + "_" + name2 + "_sigma12.h5",
-                self.file1_key,
+                self.predicted_key,
                 self.overwrite,
             )
 
         return
 
     @beartype
-    def metric_calc(self, file1_data: np.ndarray, file2_data: np.ndarray) -> float:
+    def metric_calc(
+        self, file1_data: np.ndarray, ground_truth_data: np.ndarray
+    ) -> float:
         """Calculates the Structural Similarity index between two numpy arrays.
 
         Args:
             file1_data (np.ndarray): The numpy array containing voxel data from the first file.
 
-            file2_data (np.ndarray): The numpy array containing voxel data from the second file.
+            ground_truth_data (np.ndarray): The numpy array containing voxel data from the second file.
 
         Returns:
             float: The mean squared error of the two numpy arrays.
@@ -327,25 +331,27 @@ class SSIM(Metric):
 
         K1, K2 = self.K
         if self.data_range is None:
-            self.data_range = np.max(file2_data) - np.min(file2_data)
+            self.data_range = np.max(ground_truth_data) - np.min(ground_truth_data)
         C1 = (K1 * self.data_range) ** 2
         C2 = (K2 * self.data_range) ** 2
 
         dir_path = tempfile.mkdtemp(prefix=self.tmp_root)
 
-        self.mu_sq(self.file1, self.file1_key, dir_path)
+        self.mu_sq(self.predicted, self.predicted_key, dir_path)
 
-        self.mu_sq(self.file2, self.file2_key, dir_path)
+        self.mu_sq(self.ground_truth, self.ground_truth_key, dir_path)
 
         self.co(
             dir_path,
         )
 
-        name1 = basename(self.file1)[:-3]
-        name2 = basename(self.file2)[:-3]
+        name1 = basename(self.predicted)[:-3]
+        name2 = basename(self.ground_truth)[:-3]
 
         A = torch.from_numpy(
-            Metric.load_file(dir_path + "/" + name1 + "_sigma_sq.h5", self.file1_key)
+            Metric.load_file(
+                dir_path + "/" + name1 + "_sigma_sq.h5", self.predicted_key
+            )
         ).to(self.device)
         if A.dim() == 3:
             A = A.expand(1, 1, A.size(0), A.size(1), A.size(2))
@@ -354,7 +360,9 @@ class SSIM(Metric):
             raise ValueError(f"Data in the {nm} has to 3D (HxWXD) or 5D (BxCxHxWxD)")
 
         B = torch.from_numpy(
-            Metric.load_file(dir_path + "/" + name2 + "_sigma_sq.h5", self.file2_key)
+            Metric.load_file(
+                dir_path + "/" + name2 + "_sigma_sq.h5", self.ground_truth_key
+            )
         ).to(self.device)
         if B.dim() == 3:
             B = B.expand(1, 1, B.size(0), B.size(1), B.size(2))
@@ -366,7 +374,7 @@ class SSIM(Metric):
 
         B = torch.from_numpy(
             Metric.load_file(
-                dir_path + "/" + name1 + "_" + name2 + "_sigma12.h5", self.file1_key
+                dir_path + "/" + name1 + "_" + name2 + "_sigma12.h5", self.predicted_key
             )
         ).to(self.device)
         if B.dim() == 3:
@@ -384,19 +392,19 @@ class SSIM(Metric):
             Metric.store_file(
                 A.detach().cpu().numpy(),
                 dir_path + "/" + name1 + "_" + name2 + "_cs_map.h5",
-                self.file1_key,
+                self.predicted_key,
                 self.overwrite,
             )
         else:
             Metric.store_file(
                 A.detach().numpy(),
                 dir_path + "/" + name1 + "_" + name2 + "_cs_map.h5",
-                self.file1_key,
+                self.predicted_key,
                 self.overwrite,
             )
 
         A = torch.from_numpy(
-            Metric.load_file(dir_path + "/" + name1 + "_mu_sq.h5", self.file1_key)
+            Metric.load_file(dir_path + "/" + name1 + "_mu_sq.h5", self.predicted_key)
         ).to(self.device)
         if A.dim() == 3:
             A = A.expand(1, 1, A.size(0), A.size(1), A.size(2))
@@ -405,7 +413,9 @@ class SSIM(Metric):
             raise ValueError(f"Data in the {nm} has to be 3D (HxWXD) or 5D (BxCxHxWxD)")
 
         B = torch.from_numpy(
-            Metric.load_file(dir_path + "/" + name2 + "_mu_sq.h5", self.file2_key)
+            Metric.load_file(
+                dir_path + "/" + name2 + "_mu_sq.h5", self.ground_truth_key
+            )
         ).to(self.device)
         if B.dim() == 3:
             B = B.expand(1, 1, B.size(0), B.size(1), B.size(2))
@@ -417,7 +427,7 @@ class SSIM(Metric):
 
         B = torch.from_numpy(
             Metric.load_file(
-                dir_path + "/" + name1 + "_" + name2 + "_mu1_mu2.h5", self.file1_key
+                dir_path + "/" + name1 + "_" + name2 + "_mu1_mu2.h5", self.predicted_key
             )
         ).to(self.device)
         if B.dim() == 3:
@@ -432,7 +442,7 @@ class SSIM(Metric):
 
         B = torch.from_numpy(
             Metric.load_file(
-                dir_path + "/" + name1 + "_" + name2 + "_cs_map.h5", self.file1_key
+                dir_path + "/" + name1 + "_" + name2 + "_cs_map.h5", self.predicted_key
             )
         ).to(self.device)
         if B.dim() == 3:
@@ -465,17 +475,21 @@ def main() -> None:
     parser = argparse.ArgumentParser(
         description="Calculate the SSIM of two numpy arrays"
     )
-    parser.add_argument("-f1", "--file1", required=True, help="Path to the first file")
-    parser.add_argument("-f2", "--file2", required=True, help="Path to the second file")
+    parser.add_argument(
+        "-f1", "--predicted", required=True, help="Path to the first file"
+    )
+    parser.add_argument(
+        "-f2", "--ground_truth", required=True, help="Path to the second file"
+    )
     parser.add_argument(
         "-k1",
-        "--file1_key",
+        "--predicted_key",
         default="/entry/data/data",
         help="Key to data in the first file",
     )
     parser.add_argument(
         "-k2",
-        "--file2_key",
+        "--ground_truth_key",
         default="/entry/data/data",
         help="Key to data in the second file",
     )
@@ -483,7 +497,10 @@ def main() -> None:
         "-f3", "--output_text", default="ssim_result.txt", help="File to store result"
     )
     parser.add_argument(
-        "-dr", "--data_range", default=None, help="Range of voxel values in file2"
+        "-dr",
+        "--data_range",
+        default=None,
+        help="Range of voxel values in ground_truth",
     )
     parser.add_argument(
         "-kn", "--kernel_size", default=11, help="Size of the Gaussian 3D kernel"
@@ -509,10 +526,10 @@ def main() -> None:
     )
     args = parser.parse_args()
     call_func = SSIM(
-        args.file1,
-        args.file2,
-        args.file1_key,
-        args.file2_key,
+        args.predicted,
+        args.ground_truth,
+        args.predicted_key,
+        args.ground_truth_key,
         args.output_text,
         args.data_range,
         args.kernel_size,

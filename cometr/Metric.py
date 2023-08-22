@@ -18,33 +18,33 @@ class Metric:
     @beartype
     def __init__(
         self,
-        file1: str,
-        file2: str,
-        file1_key: str = "/entry/data/data",
-        file2_key: str = "/entry/data/data",
+        predicted: str,
+        ground_truth: str,
+        predicted_key: str = "/entry/data/data",
+        ground_truth_key: str = "/entry/data/data",
         output_text: str = "output.txt",
     ) -> None:
         """Initializes the Metrics class.
 
         Args:
-            file1 (str): Path to the first HDF5 file.
+            predicted (str): Path to the first HDF5 file.
 
-            file2 (str): Path to the second HDF5 file.
+            ground_truth (str): Path to the second HDF5 file.
 
-            file1_key (str, optional): Key to the voxel data in the first file. Defaults to '/entry/data/data'.
+            predicted_key (str, optional): Key to the voxel data in the first file. Defaults to '/entry/data/data'.
 
-            file2_key (str, optional): Key to the voxel data in the second file. Defaults to '/entry/data/data'.
+            ground_truth_key (str, optional): Key to the voxel data in the second file. Defaults to '/entry/data/data'.
 
             output_text (str, optional): Path to the file to store the result. Defaults to 'output.txt'.
 
         """
-        data1 = Metric.load_file(file1, file1_key)
-        self.file1 = file1
-        self.file1_key = file1_key
+        data1 = Metric.load_file(predicted, predicted_key)
+        self.predicted = predicted
+        self.predicted_key = predicted_key
 
-        data2 = Metric.load_file(file2, file2_key)
-        self.file2 = file2
-        self.file2_key = file2_key
+        data2 = Metric.load_file(ground_truth, ground_truth_key)
+        self.ground_truth = ground_truth
+        self.ground_truth_key = ground_truth_key
 
         # check if both files are of the same dimension
         if data1.shape != data2.shape:
@@ -204,13 +204,15 @@ class Metric:
         return
 
     @beartype
-    def metric_calc(self, file1_data: np.ndarray, file2_data: np.ndarray) -> None:
+    def metric_calc(
+        self, predicted_data: np.ndarray, ground_truth_data: np.ndarray
+    ) -> None:
         """Calculates the loss metrics of the two numpy arrays.
 
         Args:
-            file1_data (np.ndarray): The numpy array containing voxel data from the first file.
+            predicted_data (np.ndarray): The numpy array containing voxel data from the first file.
 
-            file2_data (np.ndarray): The numpy array containing voxel data from the second file.
+            ground_truth_data (np.ndarray): The numpy array containing voxel data from the second file.
 
         Returns:
             None
@@ -227,8 +229,8 @@ class Metric:
 
         """
         # load voxel data arrays of both files
-        file1_data = Metric.load_file(self.file1, self.file1_key)
-        file2_data = Metric.load_file(self.file2, self.file2_key)
+        file1_data = Metric.load_file(self.predicted, self.predicted_key)
+        file2_data = Metric.load_file(self.ground_truth, self.ground_truth_key)
 
         # calculate the mean squared error
         result = self.metric_calc(file1_data, file2_data)
@@ -250,28 +252,36 @@ class Metric:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Calculate the MSE of two numpy arrays"
+        description="Calculate the desired metric between  two numpy arrays"
     )
-    parser.add_argument("-f1", "--file1", required=True, help="Path to the first file")
-    parser.add_argument("-f2", "--file2", required=True, help="Path to the second file")
+    parser.add_argument(
+        "-f1", "--predicted", required=True, help="Path to the first file"
+    )
+    parser.add_argument(
+        "-f2", "--ground_truth", required=True, help="Path to the second file"
+    )
     parser.add_argument(
         "-k1",
-        "--file1_key",
+        "--predicted_key",
         default="/entry/data/data",
         help="Key to data in the first file",
     )
     parser.add_argument(
         "-k2",
-        "--file2_key",
+        "--ground_truth_key",
         default="/entry/data/data",
-        help="Key to data in the second file",
+        help="Key to data in the ground_truth file",
     )
     parser.add_argument(
         "-f3", "--output_text", default="output.txt", help="File to store result"
     )
     args = parser.parse_args()
     call_func = Metric(
-        args.file1, args.file2, args.file1_key, args.file2_key, args.output_text
+        args.predicted,
+        args.ground_truth,
+        args.predicted_key,
+        args.ground_truth_key,
+        args.output_text,
     ).calc()
 
 

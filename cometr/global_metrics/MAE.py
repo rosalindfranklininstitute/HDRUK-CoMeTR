@@ -15,35 +15,39 @@ class MAE(Metric):
     @beartype
     def __init__(
         self,
-        file1: str,
-        file2: str,
-        file1_key: str = "/entry/data/data",
-        file2_key: str = "/entry/data/data",
+        predicted: str,
+        ground_truth: str,
+        predicted_key: str = "/entry/data/data",
+        ground_truth_key: str = "/entry/data/data",
         output_text: str = "mae_result.txt",
     ) -> None:
-        super().__init__(file1, file2, file1_key, file2_key, output_text)
+        super().__init__(
+            predicted, ground_truth, predicted_key, ground_truth_key, output_text
+        )
         self.output_text = "mae_result.txt"
 
     @beartype
-    def metric_calc(self, file1_data: np.ndarray, file2_data: np.ndarray) -> float:
+    def metric_calc(
+        self, predicted_data: np.ndarray, ground_truth_data: np.ndarray
+    ) -> float:
         """Calculates the mean absolute error of the two numpy arrays.
 
         Args:
-            file1_data (np.ndarray): The numpy array containing voxel data from the first file.
+            predicted_data (np.ndarray): The numpy array containing voxel data from the first file.
 
-            file2_data (np.ndarray): The numpy array containing voxel data from the second file.
+            ground_truth_data (np.ndarray): The numpy array containing voxel data from the second file.
 
         Returns:
             float: The mean absolute error of the two numpy arrays.
 
         """
         # Extract names of the  files
-        file1_name = os.path.basename(self.file1)
-        file2_name = os.path.basename(self.file2)
+        file1_name = os.path.basename(self.predicted)
+        file2_name = os.path.basename(self.ground_truth)
 
         # Convert data to tensors
-        file1_tensor = torch.from_numpy(file1_data)
-        file2_tensor = torch.from_numpy(file2_data)
+        file1_tensor = torch.from_numpy(predicted_data)
+        file2_tensor = torch.from_numpy(ground_truth_data)
 
         if torch.cuda.is_available():
             file1_tensor = file1_tensor.cuda()
@@ -74,17 +78,21 @@ def main() -> None:
     parser = argparse.ArgumentParser(
         description="Calculate the MAE of two numpy arrays"
     )
-    parser.add_argument("-f1", "--file1", required=True, help="Path to the first file")
-    parser.add_argument("-f2", "--file2", required=True, help="Path to the second file")
+    parser.add_argument(
+        "-f1", "--predicted", required=True, help="Path to the first file"
+    )
+    parser.add_argument(
+        "-f2", "--ground_truth", required=True, help="Path to the second file"
+    )
     parser.add_argument(
         "-k1",
-        "--file1_key",
+        "--predicted_key",
         default="/entry/data/data",
         help="Key to data in the first file",
     )
     parser.add_argument(
         "-k2",
-        "--file2_key",
+        "--ground_truth_key",
         default="/entry/data/data",
         help="Key to data in the second file",
     )
@@ -92,7 +100,13 @@ def main() -> None:
         "-f3", "--output_text", default="mae_result.txt", help="File to store result"
     )
     args = parser.parse_args()
-    MAE(args.file1, args.file2, args.file1_key, args.file2_key, args.output_text).calc()
+    MAE(
+        args.predicted,
+        args.ground_truth,
+        args.predicted_key,
+        args.ground_truth_key,
+        args.output_text,
+    ).calc()
 
 
 if __name__ == "__main__":
