@@ -69,6 +69,18 @@ class SSIMTest(unittest.TestCase):
                 dirname(abspath(__file__)) + "/../data/output.txt",
             )
 
+    # def test_SSIM_result(self) -> None:
+    #     """Test the consistency of the SSIM metric."""
+    #
+    #     metric = SSIM(
+    #         dirname(abspath(__file__)) + "/../data/file1_3d.h5",
+    #         dirname(abspath(__file__)) + "/../data/file2_3d.h5",
+    #         "/entry/data/data",
+    #         "/entry/data/data",
+    #         dirname(abspath(__file__)) + "/../data/output.txt",
+    #     )
+    #     metric.calc()
+
 
 if __name__ == "__main__":
     unittest.main()
