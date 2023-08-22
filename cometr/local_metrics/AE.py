@@ -32,25 +32,27 @@ class AbsoluteError(Metric):
         )
 
     @beartype
-    def metric_calc(self, file1_data: np.ndarray, file2_data: np.ndarray) -> None:
+    def metric_calc(
+        self, file1_data: np.ndarray, ground_truth_data: np.ndarray
+    ) -> None:
         """Calculates the absolute error of the two numpy arrays.
 
         Args:
             file1_data (np.ndarray): The numpy array containing voxel data from the first file.
 
-            file2_data (np.ndarray): The numpy array containing voxel data from the second file.
+            ground_truth_data (np.ndarray): The numpy array containing voxel data from the second file.
 
         Returns:
             float: The absolute error of the two numpy arrays.
 
         """
         # Extract names of the  files
-        file1_name = os.path.basename(self.file1)
-        file2_name = os.path.basename(self.file2)
+        file1_name = os.path.basename(self.predicted)
+        file2_name = os.path.basename(self.ground_truth)
 
         # Convert data to tensors
         file1_tensor = torch.from_numpy(file1_data)
-        file2_tensor = torch.from_numpy(file2_data)
+        file2_tensor = torch.from_numpy(ground_truth_data)
 
         if torch.cuda.is_available():
             file1_tensor = file1_tensor.cuda()
@@ -65,7 +67,7 @@ class AbsoluteError(Metric):
             store_result = Metric.store_file(
                 final_result,
                 dirname(abspath(__file__)) + "/../../localmetrics_h5data/ae.h5",
-                self.file1_key,
+                self.predicted_key,
                 overwrite=True,
             )
 
@@ -77,7 +79,7 @@ class AbsoluteError(Metric):
             store_result = Metric.store_file(
                 final_result,
                 dirname(abspath(__file__)) + "/../../localmetrics_h5data/ae.h5",
-                self.file1_key,
+                self.predicted_key,
                 overwrite=True,
             )
 
@@ -89,8 +91,8 @@ class AbsoluteError(Metric):
 
     def calc(self) -> None:
         # load voxel data arrays of both files
-        file1_data = Metric.load_file(self.file1, self.file1_key)
-        file2_data = Metric.load_file(self.file2, self.file2_key)
+        file1_data = Metric.load_file(self.predicted, self.predicted_key)
+        file2_data = Metric.load_file(self.ground_truth, self.ground_truth_key)
 
         self.metric_calc(file1_data, file2_data)
 
@@ -99,17 +101,21 @@ class AbsoluteError(Metric):
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Calculate the AE of two numpy arrays")
-    parser.add_argument("-f1", "--file1", required=True, help="Path to the first file")
-    parser.add_argument("-f2", "--file2", required=True, help="Path to the second file")
+    parser.add_argument(
+        "-f1", "--predicted", required=True, help="Path to the first file"
+    )
+    parser.add_argument(
+        "-f2", "--ground_truth", required=True, help="Path to the second file"
+    )
     parser.add_argument(
         "-k1",
-        "--file1_key",
+        "--predicted_key",
         default="/entry/data/data",
         help="Key to data in the first file",
     )
     parser.add_argument(
         "-k2",
-        "--file2_key",
+        "--ground_truth_key",
         default="/entry/data/data",
         help="Key to data in the second file",
     )
