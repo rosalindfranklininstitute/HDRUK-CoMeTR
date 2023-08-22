@@ -18,7 +18,9 @@
         <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="cometr.local_metrics package" href="cometr.local_metrics.html" />
+    <link rel="prev" title="cometr package" href="cometr.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -40,26 +42,24 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <!-- Local TOC -->
-              <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">cometr.global_metrics package</a><ul>
-<li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-cometr.global_metrics.MSE">cometr.global_metrics.MSE module</a><ul>
-<li><a class="reference internal" href="#cometr.global_metrics.MSE.MSE"><code class="docutils literal notranslate"><span class="pre">MSE</span></code></a><ul>
-<li><a class="reference internal" href="#cometr.global_metrics.MSE.MSE.calc_mse"><code class="docutils literal notranslate"><span class="pre">MSE.calc_mse()</span></code></a></li>
-<li><a class="reference internal" href="#cometr.global_metrics.MSE.MSE.check_file_exists"><code class="docutils literal notranslate"><span class="pre">MSE.check_file_exists()</span></code></a></li>
-<li><a class="reference internal" href="#cometr.global_metrics.MSE.MSE.is_h5py_file"><code class="docutils literal notranslate"><span class="pre">MSE.is_h5py_file()</span></code></a></li>
-<li><a class="reference internal" href="#cometr.global_metrics.MSE.MSE.is_key_valid"><code class="docutils literal notranslate"><span class="pre">MSE.is_key_valid()</span></code></a></li>
-<li><a class="reference internal" href="#cometr.global_metrics.MSE.MSE.is_txt"><code class="docutils literal notranslate"><span class="pre">MSE.is_txt()</span></code></a></li>
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">cometr</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="cometr.html">cometr package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="cometr.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">cometr.global_metrics package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cometr.local_metrics.html">cometr.local_metrics package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="cometr.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cometr.html#module-cometr.Metric">cometr.Metric module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cometr.html#module-cometr">Module contents</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#module-cometr.global_metrics">Module contents</a></li>
 </ul>
-</li>
-</ul>
-</div>
+
         </div>
       </div>
     </nav>
@@ -74,6 +74,8 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">cometr</a></li>
+          <li class="breadcrumb-item"><a href="cometr.html">cometr package</a></li>
       <li class="breadcrumb-item active">cometr.global_metrics package</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/cometr.global_metrics.rst.txt" rel="nofollow"> View page source</a>
@@ -89,93 +91,188 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
 </section>
+<section id="module-cometr.global_metrics.MAE">
+<span id="cometr-global-metrics-mae-module"></span><h2>cometr.global_metrics.MAE module<a class="headerlink" href="#module-cometr.global_metrics.MAE" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="cometr.global_metrics.MAE.MAE">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cometr.global_metrics.MAE.</span></span><span class="sig-name descname"><span class="pre">MAE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">predicted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ground_truth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predicted_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'/entry/data/data'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ground_truth_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'/entry/data/data'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'mae_result.txt'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cometr.global_metrics.MAE.MAE" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="cometr.html#cometr.Metric.Metric" title="cometr.Metric.Metric"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metric</span></code></a></p>
+<p>Calculates the Mean Absolute Error (MAE) between two HDF5 files containing voxel data.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="cometr.global_metrics.MAE.MAE.metric_calc">
+<span class="sig-name descname"><span class="pre">metric_calc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">predicted_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ground_truth_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#cometr.global_metrics.MAE.MAE.metric_calc" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates the mean absolute error of the two numpy arrays.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>predicted_data</strong> (<em>np.ndarray</em>) – The numpy array containing voxel data from the first file.</p></li>
+<li><p><strong>ground_truth_data</strong> (<em>np.ndarray</em>) – The numpy array containing voxel data from the second file.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The mean absolute error of the two numpy arrays.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cometr.global_metrics.MAE.main">
+<span class="sig-prename descclassname"><span class="pre">cometr.global_metrics.MAE.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#cometr.global_metrics.MAE.main" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
 <section id="module-cometr.global_metrics.MSE">
 <span id="cometr-global-metrics-mse-module"></span><h2>cometr.global_metrics.MSE module<a class="headerlink" href="#module-cometr.global_metrics.MSE" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="cometr.global_metrics.MSE.MSE">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cometr.global_metrics.MSE.</span></span><span class="sig-name descname"><span class="pre">MSE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file1_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'/entry/data/data'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file2_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'/entry/data/data'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'output.txt'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cometr.global_metrics.MSE.MSE" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cometr.global_metrics.MSE.</span></span><span class="sig-name descname"><span class="pre">MSE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">predicted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ground_truth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predicted_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'/entry/data/data'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ground_truth_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'/entry/data/data'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'mse_result.txt'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cometr.global_metrics.MSE.MSE" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="cometr.html#cometr.Metric.Metric" title="cometr.Metric.Metric"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metric</span></code></a></p>
 <p>Calculates the Mean Squared Error (MSE) between two HDF5 files containing voxel data.</p>
-<p>This class provides a convenient way to calculate the MSE between voxel data
-stored in two HDF5 files. It reads the data from both files, checks for validity,
-calculates the MSE, and stores the result in a specified text file.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="cometr.global_metrics.MSE.MSE.calc_mse">
-<span class="sig-name descname"><span class="pre">calc_mse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#cometr.global_metrics.MSE.MSE.calc_mse" title="Permalink to this definition"></a></dt>
-<dd><p>Calculates the mean squared error of the two numpy arrays and saves the result to the specified text file.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>The mean squared error of the two numpy arrays.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="cometr.global_metrics.MSE.MSE.check_file_exists">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">check_file_exists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#cometr.global_metrics.MSE.MSE.check_file_exists" title="Permalink to this definition"></a></dt>
-<dd><p>Check if the file exists.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>inp</strong> (<em>str</em>) – The file path to check.</p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>FileNotFoundError</strong> – If the file does not exist.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="cometr.global_metrics.MSE.MSE.is_h5py_file">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_h5py_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#cometr.global_metrics.MSE.MSE.is_h5py_file" title="Permalink to this definition"></a></dt>
-<dd><p>Check if the file is a valid HDF5 file.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>inp</strong> (<em>str</em>) – The file path to check.</p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>TypeError</strong> – If the file is not a valid HDF5 file.</p></li>
-<li><p><strong>NameError</strong> – If the file does not have a .h5 extension.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="cometr.global_metrics.MSE.MSE.is_key_valid">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_key_valid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#cometr.global_metrics.MSE.MSE.is_key_valid" title="Permalink to this definition"></a></dt>
-<dd><p>Test if the given key exists in the input .h5 filename.</p>
+<dt class="sig sig-object py" id="cometr.global_metrics.MSE.MSE.metric_calc">
+<span class="sig-name descname"><span class="pre">metric_calc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">predicted_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ground_truth_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#cometr.global_metrics.MSE.MSE.metric_calc" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates the mean squared error of the two numpy arrays.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<em>str</em>) – Input filename of the .h5 file.</p></li>
-<li><p><strong>test_key</strong> (<em>str</em>) – Key to be tested, if it is included in the .h5 file.</p></li>
+<li><p><strong>predicted_data</strong> (<em>np.ndarray</em>) – The numpy array containing voxel data from the first file.</p></li>
+<li><p><strong>ground_truth_data</strong> (<em>np.ndarray</em>) – The numpy array containing voxel data from the second file.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>NameError</strong> – If the key is not a valid key in the .h5 file.</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The mean squared error of the two numpy arrays.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cometr.global_metrics.MSE.main">
+<span class="sig-prename descclassname"><span class="pre">cometr.global_metrics.MSE.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#cometr.global_metrics.MSE.main" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-cometr.global_metrics.PSNR">
+<span id="cometr-global-metrics-psnr-module"></span><h2>cometr.global_metrics.PSNR module<a class="headerlink" href="#module-cometr.global_metrics.PSNR" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="cometr.global_metrics.PSNR.PSNR">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cometr.global_metrics.PSNR.</span></span><span class="sig-name descname"><span class="pre">PSNR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">predicted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predicted_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'/entry/data/data'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'/entry/data/data'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'psnr_result.txt'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cometr.global_metrics.PSNR.PSNR" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="cometr.html#cometr.Metric.Metric" title="cometr.Metric.Metric"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metric</span></code></a></p>
+<p>Calculates the Peak Signal-To-Noise Ratio (PSNR) between two HDF5 files containing voxel data.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="cometr.global_metrics.PSNR.PSNR.metric_calc">
+<span class="sig-name descname"><span class="pre">metric_calc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">predicted_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#cometr.global_metrics.PSNR.PSNR.metric_calc" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates the Peak Signal-To-Noise Ratio (PSNR)  of the two numpy arrays.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>predicted_data</strong> (<em>np.ndarray</em>) – The numpy array containing the predicted voxel data.</p></li>
+<li><p><strong>target_data</strong> (<em>np.ndarray</em>) – The numpy array containing the groundtruth voxel data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The Peak Signal-To-Noise Ratio (PSNR) of the two numpy arrays.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cometr.global_metrics.PSNR.main">
+<span class="sig-prename descclassname"><span class="pre">cometr.global_metrics.PSNR.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#cometr.global_metrics.PSNR.main" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-cometr.global_metrics.SSIM">
+<span id="cometr-global-metrics-ssim-module"></span><h2>cometr.global_metrics.SSIM module<a class="headerlink" href="#module-cometr.global_metrics.SSIM" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="cometr.global_metrics.SSIM.SSIM">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cometr.global_metrics.SSIM.</span></span><span class="sig-name descname"><span class="pre">SSIM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">predicted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ground_truth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predicted_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'/entry/data/data'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ground_truth_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'/entry/data/data'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'ssim_result.txt'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">11</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">K</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(0.01,</span> <span class="pre">0.03)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmp_root</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cometr.global_metrics.SSIM.SSIM" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="cometr.html#cometr.Metric.Metric" title="cometr.Metric.Metric"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metric</span></code></a></p>
+<p>Calculates the Structural Similarity Index (SSIM) between two HDF5 files containing voxel data.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="cometr.global_metrics.SSIM.SSIM.co">
+<span class="sig-name descname"><span class="pre">co</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#cometr.global_metrics.SSIM.SSIM.co" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate and store covariance between the two datasets using Gaussian-blurred mean products.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dir_path</strong> (<em>str</em>) – Directory path for output files.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="cometr.global_metrics.MSE.MSE.is_txt">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_txt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#cometr.global_metrics.MSE.MSE.is_txt" title="Permalink to this definition"></a></dt>
-<dd><p>Check if the output file has a .txt extension.</p>
+<dt class="sig sig-object py" id="cometr.global_metrics.SSIM.SSIM.gaussian_blur_3d">
+<span class="sig-name descname"><span class="pre">gaussian_blur_3d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tensor</span></span></span><a class="headerlink" href="#cometr.global_metrics.SSIM.SSIM.gaussian_blur_3d" title="Permalink to this definition"></a></dt>
+<dd><p>Perform 3D Gaussian blur on the input tensor using the kernel and sigma.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>inp</strong> (<em>str</em>) – The file path to check.</p>
+<dd class="field-odd"><p><strong>inp</strong> (<em>torch.Tensor</em>) – Input tensor to apply Gaussian blur to.</p>
 </dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>NameError</strong> – If the output file does not have a .txt extension.</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Gaussian-blurred output tensor.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cometr.global_metrics.SSIM.SSIM.metric_calc">
+<span class="sig-name descname"><span class="pre">metric_calc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file1_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ground_truth_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#cometr.global_metrics.SSIM.SSIM.metric_calc" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates the Structural Similarity index between two numpy arrays.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file1_data</strong> (<em>np.ndarray</em>) – The numpy array containing voxel data from the first file.</p></li>
+<li><p><strong>ground_truth_data</strong> (<em>np.ndarray</em>) – The numpy array containing voxel data from the second file.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The mean squared error of the two numpy arrays.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cometr.global_metrics.SSIM.SSIM.mu_sq">
+<span class="sig-name descname"><span class="pre">mu_sq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dir_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#cometr.global_metrics.SSIM.SSIM.mu_sq" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates and stores the squared mean (mu_sq) and squared difference (sigma_sq)
+between input data and squared mean using Gaussian blurring.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<em>str</em>) – Name of the input file containing data.</p></li>
+<li><p><strong>file_key</strong> (<em>str</em>) – Key to access data within the input file.</p></li>
+<li><p><strong>dir_path</strong> (<em>str</em>) – Directory path for output files.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
 
 </dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cometr.global_metrics.SSIM.main">
+<span class="sig-prename descclassname"><span class="pre">cometr.global_metrics.SSIM.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#cometr.global_metrics.SSIM.main" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 </section>
 <section id="module-cometr.global_metrics">
@@ -186,7 +283,10 @@ calculates the MSE, and stores the result in a specified text file.</p>
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="cometr.html" class="btn btn-neutral float-left" title="cometr package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="cometr.local_metrics.html" class="btn btn-neutral float-right" title="cometr.local_metrics package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 
