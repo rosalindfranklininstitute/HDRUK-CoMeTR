@@ -11,7 +11,6 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install -e .[dev] --extra-index-url https://download.pytorch.org/whl/cu117
           pip install -e .[build_docs]
         
       - name: Sphinx build
