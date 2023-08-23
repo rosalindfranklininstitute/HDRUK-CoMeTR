@@ -82,7 +82,7 @@ class SquaredError(Metric):
             )
 
         print(
-            f"The Squared Error between the {file1_name} and {file2_name} is stored in the se.h5 file",
+            f"The Squared Error between the {file1_name} and {file2_name} is stored in the se.h5 file"
         )
 
         return

@@ -84,7 +84,7 @@ class AbsoluteError(Metric):
             )
 
         print(
-            f"The Absolute Error between the {file1_name} and {file2_name} is stored in the ae.h5 file",
+            f"The Absolute Error between the {file1_name} and {file2_name} is stored in the ae.h5 file"
         )
 
         return
