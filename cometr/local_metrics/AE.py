@@ -17,28 +17,28 @@ class AbsoluteError(Metric):
     @beartype
     def __init__(
         self,
-        file1: str,
-        file2: str,
-        file1_key: str = "/entry/data/data",
-        file2_key: str = "/entry/data/data",
+        predicted: str,
+        ground_truth: str,
+        predicted_key: str = "/entry/data/data",
+        ground_truth_key: str = "/entry/data/data",
         output_text: str = "ae_result.txt",
     ) -> None:
         super().__init__(
-            file1,
-            file2,
-            file1_key,
-            file2_key,
+            predicted,
+            ground_truth,
+            predicted_key,
+            ground_truth_key,
             output_text="output.txt",
         )
 
     @beartype
     def metric_calc(
-        self, file1_data: np.ndarray, ground_truth_data: np.ndarray
+        self, predicted_data: np.ndarray, ground_truth_data: np.ndarray
     ) -> None:
         """Calculates the absolute error of the two numpy arrays.
 
         Args:
-            file1_data (np.ndarray): The numpy array containing voxel data from the first file.
+            predicted_data (np.ndarray): The numpy array containing voxel data from the first file.
 
             ground_truth_data (np.ndarray): The numpy array containing voxel data from the second file.
 
@@ -51,7 +51,7 @@ class AbsoluteError(Metric):
         file2_name = os.path.basename(self.ground_truth)
 
         # Convert data to tensors
-        file1_tensor = torch.from_numpy(file1_data)
+        file1_tensor = torch.from_numpy(predicted_data)
         file2_tensor = torch.from_numpy(ground_truth_data)
 
         if torch.cuda.is_available():
@@ -91,10 +91,10 @@ class AbsoluteError(Metric):
 
     def calc(self) -> None:
         # load voxel data arrays of both files
-        file1_data = Metric.load_file(self.predicted, self.predicted_key)
-        file2_data = Metric.load_file(self.ground_truth, self.ground_truth_key)
+        predicted_data = Metric.load_file(self.predicted, self.predicted_key)
+        ground_truth_data = Metric.load_file(self.ground_truth, self.ground_truth_key)
 
-        self.metric_calc(file1_data, file2_data)
+        self.metric_calc(predicted_data, ground_truth_data)
 
         return
 
@@ -111,13 +111,13 @@ def main() -> None:
         "-k1",
         "--predicted_key",
         default="/entry/data/data",
-        help="Key to data in the first file",
+        help="Key to data in the predicted file",
     )
     parser.add_argument(
         "-k2",
         "--ground_truth_key",
         default="/entry/data/data",
-        help="Key to data in the second file",
+        help="Key to data in the ground truth file",
     )
     parser.add_argument(
         "-f3", "--output_text", default="ae_result.txt", help="File to store result"
@@ -125,7 +125,11 @@ def main() -> None:
 
     args = parser.parse_args()
     ae_instance = AbsoluteError(
-        args.file1, args.file2, args.file1_key, args.file2_key, args.output_text
+        args.predicted,
+        args.ground_truth,
+        args.predicted_key,
+        args.ground_truth_key,
+        args.output_text,
     ).calc()
 
 
