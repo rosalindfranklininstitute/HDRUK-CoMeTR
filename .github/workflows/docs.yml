@@ -7,16 +7,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-python@v3
+      - uses: actions/setup-python@v4
+        with:
+            python_version: '3.7'
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install -e .[dev]
-          pip install sphinx==6.* sphinx-autodoc-typehints sphinx-remove-toctrees \
-          sphinx_design sphinx-book-theme sphinx_copybutton
+          pip install -e .[build_docs]
+        
       - name: Sphinx build
         run: |
-          sphinx-build -b html docs/source _build
+          sphinx-build -b html docs _build
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
