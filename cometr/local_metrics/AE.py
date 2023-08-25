@@ -78,7 +78,7 @@ class AbsoluteError(Metric):
             final_result = result.detach().numpy()
             store_result = Metric.store_file(
                 final_result,
-                dirname(abspath(__file__)) + "/../../localmetrics_h5data/ae.h5",
+                dirname(abspath(__file__)) + "/../../ae.h5",
                 self.predicted_key,
                 overwrite=True,
             )
