@@ -1,0 +1,28 @@
+name: Create Docs
+on: [push, pull_request, workflow_dispatch]
+permissions:
+    contents: write
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+            python_version: '3.7'
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -e .[build_docs]
+        
+      - name: Sphinx build
+        run: |
+          sphinx-build -b html docs _build
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        with:
+          publish_branch: gh-pages
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: _build/
+          force_orphan: true
