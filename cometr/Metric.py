@@ -7,11 +7,11 @@ from beartype import beartype
 
 
 class Metric:
-    """Calculates the Mean Squared Error (MSE) between two HDF5 files containing voxel data.
+    """Calculates the desired Metric between two HDF5 files containing voxel data.
 
-    This class provides a convenient way to calculate the MSE between voxel data
+    This class provides a convenient way to calculate the  between voxel data
     stored in two HDF5 files. It reads the data from both files, checks for validity,
-    calculates the MSE, and stores the result in a specified text file.
+    calculates the metric, and stores the result in a specified text file.
 
     """
 
